@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "POEClickCounter", "POEClickCounter\POEClickCounter.vcxproj", "{ABCBB6C5-4597-47AF-9035-65E13F223369}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ABCBB6C5-4597-47AF-9035-65E13F223369}.Debug|x64.ActiveCfg = Debug|x64
+		{ABCBB6C5-4597-47AF-9035-65E13F223369}.Debug|x64.Build.0 = Debug|x64
+		{ABCBB6C5-4597-47AF-9035-65E13F223369}.Release|x64.ActiveCfg = Release|x64
+		{ABCBB6C5-4597-47AF-9035-65E13F223369}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {56663651-4CBE-4E2F-ABE8-8AAC9EB9DAEF}
+	EndGlobalSection
+EndGlobal
