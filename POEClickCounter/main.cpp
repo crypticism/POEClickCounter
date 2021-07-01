@@ -7,7 +7,6 @@
 #include "io/file.h"
 #include "io/ini.h"
 
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -26,6 +25,9 @@ int main(int argc, char *argv[])
     }
 
     QWidget::connect(&ClickDisplay::instance(), &ClickDisplay::handleEvent, &ClickDisplay::dispatchUpdate);
+    QWidget::connect(&ClickDisplay::instance(), &ClickDisplay::checkIsActive, &ClickDisplay::isApplicationActive);
+    QWidget::connect(&ClickDisplay::instance(), &ClickDisplay::setIsActive, &ClickDisplay::setIsCheckingActive);
+
     ClickDisplay::instance().setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint });
     ClickDisplay::instance().show();
 
@@ -33,3 +35,4 @@ int main(int argc, char *argv[])
 
     return a.exec();
 }
+

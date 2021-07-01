@@ -4,3 +4,5 @@
 #include <winrt/Windows.Foundation.Collections.h>
 #include <Windows.h>
 #include "utils/json.h"
+
+const std::wstring application = L"Untitled - Notepad";

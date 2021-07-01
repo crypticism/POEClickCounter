@@ -1,6 +1,7 @@
 #include "../pch.h"
 
 #include <QPushButton>
+#include <QTimer>
 
 #include "ClickDisplay.h"
 #include "../io/file.h"
@@ -39,6 +40,10 @@ ClickDisplay::ClickDisplay(QWidget *parent)
     ui->skill_value->setText(calculateLabel(getValueFromJson(SKILL_USE)));
     ui->flask_value->setText(calculateLabel(getValueFromJson(FLASK_USE)));
 
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, QOverload<>::of(&ClickDisplay::checkIsActive));
+    timer->start(3000);
+
     // Set window position based on config values
     json::JsonObject& settings = File::get_settings();
     double x_pos = settings.GetNamedNumber(L"x_pos");
@@ -54,6 +59,24 @@ ClickDisplay::~ClickDisplay()
     UnhookWindowsHookEx(this->hh_keyboard_hook);
 }
 
+// Loops through all windows and checks if they match the defined application name
+// If any do, emit an event to note that application is open
+BOOL CALLBACK ClickDisplay::EnumWindowsProc(HWND hwnd, LPARAM lParam)
+{
+    int length = GetWindowTextLength(hwnd) + 1;
+
+    std::wstring buffer(length, '\0');
+    LPWSTR title = reinterpret_cast<LPWSTR>(&buffer[0]);
+    GetWindowText(hwnd, title, length);
+
+    if (IsWindowVisible(hwnd) && title == application) {
+        emit instance().setIsActive();
+        return TRUE;
+    }
+
+    return TRUE;
+};
+
 LRESULT CALLBACK ClickDisplay::mouse_hook(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode < 0) return CallNextHookEx(NULL, nCode, wParam, lParam);
 
@@ -64,7 +87,7 @@ LRESULT CALLBACK ClickDisplay::mouse_hook(int nCode, WPARAM wParam, LPARAM lPara
         // Ensure clicks are being ignored if not in the PoE window
         std::wstring title = get_active_window();
 
-        if (title == L"POEClickCounter (Running) - Microsoft Visual Studio") {
+        if (title == application) {
             // Skills can be bound to mouse buttons
             if (INI::is_skill_code(VK_LBUTTON)) {
                 emit instance().handleEvent(SKILL_USE);
@@ -95,7 +118,7 @@ LRESULT CALLBACK ClickDisplay::keyboard_hook(int nCode, WPARAM wParam, LPARAM lP
         // Ensure keypresses are being ignored if the PoE window is not active
         std::wstring title = get_active_window();
 
-        if (title == L"POEClickCounter (Running) - Microsoft Visual Studio") {
+        if (title == application) {
             KBDLLHOOKSTRUCT* hook_info = (KBDLLHOOKSTRUCT*)lParam;
             DWORD input = hook_info->vkCode;
             if (INI::is_skill_code(input)) {

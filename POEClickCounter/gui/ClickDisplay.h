@@ -32,9 +32,12 @@ public:
 
     static LRESULT CALLBACK mouse_hook(int nCode, WPARAM wParam, LPARAM lParam);
     static LRESULT CALLBACK keyboard_hook(int nCode, WPARAM wParam, LPARAM lParam);
+    static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
 
 public slots:
     void dispatchUpdate(std::wstring);
+    
+    // Toggles the locked status and icon when the lock button is pressed
     void toggleLock() {
         locked = !locked;
         if (locked) {
@@ -44,6 +47,28 @@ public slots:
             setIcon(unlock_icon);
         }
     };
+    
+    // Check whether the application is open or not
+    void isApplicationActive() {
+        // Reset checking value to false, as we can only determine whether it is open
+        // not whether it is not open
+        is_active_checking = false;
+
+        EnumWindows(*EnumWindowsProc, NULL);
+
+        if (is_active_checking) {
+            this->show();
+        }
+        else {
+            this->hide();
+        }
+
+        is_active = is_active_checking;
+    }
+    
+    void setIsCheckingActive() {
+        is_active_checking = true;
+    }
 
 protected:
     void mousePressEvent(QMouseEvent* evt) {
@@ -70,10 +95,15 @@ protected:
 
 signals:
     void handleEvent(std::wstring);
+    void checkIsActive();
+    void setIsActive();
 
 private:
 	Ui::ClickDisplay *ui;
 	
+    bool is_active_checking = false;
+    bool is_active = false;
+
     bool locked = true;
     QPoint old_pos;
 
@@ -83,5 +113,6 @@ private:
     QIcon lock_icon = QIcon("gui\\lock.ico");
     QIcon unlock_icon = QIcon("gui\\unlock.ico");
 };
+
 
 #endif // CLICKDISPLAY_H
