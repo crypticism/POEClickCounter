@@ -9,6 +9,9 @@ namespace File
 	constexpr const wchar_t* settings_filename = L"settings.json";
 	constexpr const wchar_t* data_filename = L"click_data.json";
 
+	json::JsonObject data;
+	json::JsonObject settings;
+
 	std::wstring get_save_folder_location() {
 		PWSTR local_app_path;
 		winrt::check_hresult(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &local_app_path));
@@ -32,7 +35,7 @@ namespace File
 		return get_save_folder_location() + settings_filename;
 	}
 
-	void save_data(const json::JsonObject& data) {
+	void save_data() {
 		// Avoid overwriting file with empty data if something goes wrong
 		if (!json::has(data, L"left_click", json::JsonValueType::Number)) {
 			return;
@@ -41,22 +44,34 @@ namespace File
 		json::to_file(save_file_location, data);
 	}
 
-	void save_settings(const json::JsonObject& settings) {
+	void update_settings(std::wstring field, json::JsonValue value) {
+		settings.SetNamedValue(field, value);
+	}
+
+	void save_settings() {
 		const std::wstring save_file_location = get_settings_file_location();
 		json::to_file(save_file_location, settings);
 	}
 
-	json::JsonObject load_data()
+	void load_data()
 	{
 		const std::wstring save_file_location = get_data_file_location();
 		auto saved_data = json::from_file(save_file_location);
-		return saved_data.has_value() ? std::move(*saved_data) : json::JsonObject{};
+		data = saved_data.has_value() ? std::move(*saved_data) : json::JsonObject{};
 	}
 
-	json::JsonObject load_settings()
+	void load_settings()
 	{
 		const std::wstring save_file_location = get_settings_file_location();
 		auto saved_settings = json::from_file(save_file_location);
-		return saved_settings.has_value() ? std::move(*saved_settings) : json::JsonObject{};
+		settings = saved_settings.has_value() ? std::move(*saved_settings) : json::JsonObject{};
+	}
+
+	json::JsonObject& get_data() {
+		return data;
+	}
+
+	json::JsonObject& get_settings() {
+		return settings;
 	}
 }

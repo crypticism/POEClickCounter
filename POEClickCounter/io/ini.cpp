@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#include "ini.h"
 
 namespace INI {
 	constexpr const wchar_t* poe_path = L"\\Documents\\My Games\\Path of Exile\\";

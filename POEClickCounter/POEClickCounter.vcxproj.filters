@@ -40,9 +40,15 @@
     <ClCompile Include="gui\ClickDisplay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gui\SystemTrayIcon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="gui\ClickDisplay.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="gui\SystemTrayIcon.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -73,6 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="gui\ClickDisplay.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="gui\SystemTrayIcon.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

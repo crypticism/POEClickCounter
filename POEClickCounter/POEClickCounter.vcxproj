@@ -61,10 +61,16 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>.\gui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(Qt_LIBS_);%(AdditionalDependencies);runtimeobject.lib</AdditionalDependencies>
     </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\gui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -95,11 +101,13 @@
   <ItemGroup>
     <QtRcc Include="POEClickCounter.qrc" />
     <ClCompile Include="gui\ClickDisplay.cpp" />
+    <ClCompile Include="gui\SystemTrayIcon.cpp" />
     <ClCompile Include="io\file.cpp" />
     <ClCompile Include="io\ini.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="gui\SystemTrayIcon.h" />
     <ClInclude Include="io\ini.h" />
     <ClInclude Include="resource.h" />
     <QtMoc Include="gui\ClickDisplay.h" />
@@ -113,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="gui\ClickDisplay.ui" />
+    <QtUic Include="gui\SystemTrayIcon.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

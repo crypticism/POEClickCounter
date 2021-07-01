@@ -1,10 +1,13 @@
 #pragma once
 #ifndef CLICKDISPLAY_H
 #define CLICKDISPLAY_H
-
+#define NOMINMAX
 #include "../pch.h"
 
+#include <algorithm>
+
 #include <QWidget>
+#include <QtGui>
 
 #include "../io/file.h"
 #include "ui_ClickDisplay.h"
@@ -25,39 +28,45 @@ class ClickDisplay : public QWidget
 public:
     static ClickDisplay& instance();
 	explicit ClickDisplay(QWidget *parent = Q_NULLPTR);
-	virtual ~ClickDisplay();
+	~ClickDisplay();
 
     static LRESULT CALLBACK mouse_hook(int nCode, WPARAM wParam, LPARAM lParam);
     static LRESULT CALLBACK keyboard_hook(int nCode, WPARAM wParam, LPARAM lParam);
 
 public slots:
-    void dispatchUpdate(std::wstring event_type) {
-        double nValue = getValue(event_type) + 1;
-        this->data.SetNamedValue(event_type, json::value(nValue));
-
-        QString sValue = calculateLabel(nValue);
-
-        if (event_type == LEFT_CLICK) {
-            ui->l_click_value->setText(sValue);
-            return;
+    void dispatchUpdate(std::wstring);
+    void toggleLock() {
+        locked = !locked;
+        if (locked) {
+            setIcon(lock_icon);
         }
-        if (event_type == MIDDLE_CLICK) {
-            ui->m_click_value->setText(sValue);
-            return;
-        }
-        if (event_type == RIGHT_CLICK) {
-            ui->r_click_value->setText(sValue);
-            return;
-        }
-        if (event_type == SKILL_USE) {
-            ui->skill_value->setText(sValue);
-            return;
-        }
-        if (event_type == FLASK_USE) {
-            ui->flask_value->setText(sValue);
-            return;
+        else {
+            setIcon(unlock_icon);
         }
     };
+
+protected:
+    void mousePressEvent(QMouseEvent* evt) {
+        old_pos = evt->globalPos();
+    }
+
+    void mouseMoveEvent(QMouseEvent* evt)
+    {
+        if (locked) {
+            return;
+        }
+        
+        const QPoint delta = evt->globalPos() - old_pos;
+        move(x() + delta.x(), y() + delta.y());
+        
+        old_pos = evt->globalPos();
+        File::update_settings(L"x_pos", json::value(old_pos.x()));
+        File::update_settings(L"y_pos", json::value(old_pos.y()));
+    }
+
+    void setIcon(QIcon icon) {
+        ui->lock_unlock_button->setIcon(icon);
+    }
 
 signals:
     void handleEvent(std::wstring);
@@ -65,42 +74,14 @@ signals:
 private:
 	Ui::ClickDisplay *ui;
 	
+    bool locked = true;
+    QPoint old_pos;
+
     HHOOK hh_mouse_hook;
 	HHOOK hh_keyboard_hook;
-    
-    json::JsonObject data;
 
-    double getValue(std::wstring event_type) {
-        double value;
-        if (json::has(this->data, event_type, json::JsonValueType::Number)) {
-            return floor(this->data.GetNamedNumber(event_type));
-        }
-        else {
-            value = 0.0;
-        }
-        return value;
-    }
-    QString calculateLabel(double value) {
-        double cmp = value == 0 ? 0 : floor(log10(abs(value)) / 3);
-        double min = std::min(5.0, cmp);
-        double max = std::max(0.0, min);
-
-        int index = max;
-
-        std::string buffer = std::to_string(int(floor(value)));
-
-        for (int i = 0; i < 3 * (index - 1); i++) {
-            buffer.pop_back();
-        }
-
-        if (index >= 1) {
-            std::string to_insert = ".";
-            int pos = int(buffer.length()) - 3;
-            buffer.insert(pos, to_insert);
-        }
-
-        return QString::fromUtf8(buffer).append(suffixes[index]);
-    };
+    QIcon lock_icon = QIcon("gui\\lock.ico");
+    QIcon unlock_icon = QIcon("gui\\unlock.ico");
 };
 
 #endif // CLICKDISPLAY_H
