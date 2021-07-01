@@ -62,6 +62,9 @@
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>$(Qt_LIBS_);%(AdditionalDependencies);runtimeobject.lib</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -91,14 +94,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="POEClickCounter.qrc" />
-    <ClCompile Include="gui\POEClickCounter.cpp" />
+    <ClCompile Include="gui\ClickDisplay.cpp" />
+    <ClCompile Include="io\file.cpp" />
+    <ClCompile Include="io\ini.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="gui\POEClickCounter.h" />
+    <ClInclude Include="io\ini.h" />
+    <ClInclude Include="resource.h" />
+    <QtMoc Include="gui\ClickDisplay.h" />
+    <ClInclude Include="io\file.h" />
+    <ClInclude Include="io\input.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="utils\json.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="gui\POEClickCounter.ui" />
+    <ResourceCompile Include="POEClickCounter.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="gui\ClickDisplay.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
