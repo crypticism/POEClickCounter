@@ -4,6 +4,8 @@
 
 #include "SystemTrayIcon.h"
 
+#include "../io/ini.h"
+
 SystemTrayIcon::SystemTrayIcon()
 {
 	createActions();
@@ -24,8 +26,15 @@ void SystemTrayIcon::setVisible(bool visible) {
     QDialog::setVisible(visible);
 }
 
+void SystemTrayIcon::refreshKeybinds() {
+    INI::load_ini();
+}
+
 void SystemTrayIcon::createActions()
 {
+    refreshAction = new QAction(tr("&Refresh Keybinds"), this);
+    connect(refreshAction, &QAction::triggered, this, &SystemTrayIcon::refreshKeybinds);
+
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 }
@@ -33,7 +42,10 @@ void SystemTrayIcon::createActions()
 void SystemTrayIcon::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(refreshAction);
+    trayIconMenu->addSeparator();
     trayIconMenu->addAction(quitAction);
+
 
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayIconMenu);

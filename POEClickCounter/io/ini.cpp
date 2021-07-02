@@ -23,6 +23,9 @@ namespace INI {
 	}
 
 	void load_ini() {
+		skill_codes.clear();
+		flask_codes.clear();
+
 		std::wstring save_file_location = get_ini_location();
 		std::ifstream infile(save_file_location);
 

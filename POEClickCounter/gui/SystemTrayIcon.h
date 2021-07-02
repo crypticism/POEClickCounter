@@ -22,10 +22,14 @@ public:
 
 	void setVisible(bool) override;
 
+public slots:
+	void refreshKeybinds();
+
 private:
 	void createActions();
 	void createTrayIcon();
 
+	QAction* refreshAction;
     QAction* minimizeAction;
     QAction* maximizeAction;
     QAction* restoreAction;
