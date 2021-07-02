@@ -25,13 +25,16 @@ public:
 public slots:
 	void refreshKeybinds();
 	void toggleNeverShow();
+	void toggleLock();
 
 private:
 	void createActions();
 	void createTrayIcon();
 
+	bool locked = true;
 	bool never_show = false;
 
+	QAction* toggleGUILockAction;
 	QAction* toggleNeverShowAction;
 	QAction* refreshAction;
 

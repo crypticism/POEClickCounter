@@ -71,6 +71,10 @@ public slots:
         }
     }
 
+    void toggleLock() {
+        locked = !locked;
+    }
+
 protected:
     void mousePressEvent(QMouseEvent* evt) {
         old_pos = evt->globalPos();

@@ -42,6 +42,10 @@ void SystemTrayIcon::refreshKeybinds() {
 
 void SystemTrayIcon::createActions()
 {
+    toggleGUILockAction = new QAction(tr("&Unlock GUI"), this);
+    connect(toggleGUILockAction, &QAction::triggered, &ClickDisplay::instance(), &ClickDisplay::toggleLock);
+    connect(toggleGUILockAction, &QAction::triggered, this, &SystemTrayIcon::toggleLock);
+
     toggleNeverShowAction = new QAction(tr("&Never Show GUI"), this);
     connect(toggleNeverShowAction, &QAction::triggered, &ClickDisplay::instance(), &ClickDisplay::neverShow);
     connect(toggleNeverShowAction, &QAction::triggered, this, &SystemTrayIcon::toggleNeverShow);
@@ -56,6 +60,7 @@ void SystemTrayIcon::createActions()
 void SystemTrayIcon::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(toggleGUILockAction);
     trayIconMenu->addAction(toggleNeverShowAction);
     trayIconMenu->addAction(refreshAction);
     trayIconMenu->addSeparator();
@@ -78,4 +83,16 @@ void SystemTrayIcon::toggleNeverShow()
     }
 
     File::update_settings(L"never_show", json::value(never_show));
+}
+
+void SystemTrayIcon::toggleLock()
+{
+    locked = !locked;
+
+    if (locked) {
+        toggleGUILockAction->setText(tr("&Unlock GUI"));
+    }
+    else {
+        toggleGUILockAction->setText(tr("&Lock GUI"));
+    }
 }
