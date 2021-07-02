@@ -43,6 +43,10 @@ public slots:
         // not whether it is not open
         is_active_checking = false;
 
+        if (never_show) {
+            return;
+        }
+
         EnumWindows(*EnumWindowsProc, NULL);
 
         if (is_active_checking) {
@@ -57,6 +61,14 @@ public slots:
     
     void setIsCheckingActive() {
         is_active_checking = true;
+    }
+
+    void neverShow() {
+        never_show = !never_show;
+
+        if (never_show) {
+            this->hide();
+        }
     }
 
 protected:
@@ -86,6 +98,8 @@ signals:
 private:
 	Ui::ClickDisplay *ui;
 	
+    bool never_show = false;
+
     bool is_active_checking = false;
     bool is_active = false;
 

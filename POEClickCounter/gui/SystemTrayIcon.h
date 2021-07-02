@@ -24,12 +24,17 @@ public:
 
 public slots:
 	void refreshKeybinds();
+	void toggleNeverShow();
 
 private:
 	void createActions();
 	void createTrayIcon();
 
+	bool never_show = false;
+
+	QAction* toggleNeverShowAction;
 	QAction* refreshAction;
+
     QAction* minimizeAction;
     QAction* maximizeAction;
     QAction* restoreAction;

@@ -24,6 +24,10 @@ ClickDisplay::ClickDisplay(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Set ui state based on saved setting
+    json::JsonObject& settings = File::get_settings();
+    never_show = settings.GetNamedBoolean(L"never_show");
+
     // Set up input listeners
 	HINSTANCE hInstance = GetModuleHandle(NULL);
 	hh_mouse_hook = SetWindowsHookEx(WH_MOUSE_LL, mouse_hook, hInstance, 0);
@@ -36,12 +40,12 @@ ClickDisplay::ClickDisplay(QWidget *parent)
     ui->skill_value->setText(calculateLabel(getValueFromJson(SKILL_USE)));
     ui->flask_value->setText(calculateLabel(getValueFromJson(FLASK_USE)));
 
+    // Create timer that checks if window is open to show/hide GUI automatically
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&ClickDisplay::checkIsActive));
     timer->start(3000);
 
     // Set window position based on config values
-    json::JsonObject& settings = File::get_settings();
     double x_pos = settings.GetNamedNumber(L"x_pos");
     double y_pos = settings.GetNamedNumber(L"y_pos");
     move(QPoint(int(x_pos), int(y_pos)));

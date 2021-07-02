@@ -23,6 +23,9 @@ int main(int argc, char *argv[])
     if (!json::has(settings, L"y_pos", json::JsonValueType::Number)) {
         File::update_settings(L"y_pos", json::value(500));
     }
+    if (!json::has(settings, L"never_show", json::JsonValueType::Boolean)) {
+        File::update_settings(L"never_show", json::value(false));
+    }
 
     QWidget::connect(&ClickDisplay::instance(), &ClickDisplay::handleEvent, &ClickDisplay::dispatchUpdate);
     QWidget::connect(&ClickDisplay::instance(), &ClickDisplay::checkIsActive, &ClickDisplay::isApplicationActive);
@@ -30,7 +33,10 @@ int main(int argc, char *argv[])
 
     ClickDisplay::instance().setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
     ClickDisplay::instance().setAttribute(Qt::WA_TranslucentBackground);
-    ClickDisplay::instance().show();
+
+    if (!settings.GetNamedBoolean(L"never_show")) {
+        ClickDisplay::instance().show();
+    }
 
     SystemTrayIcon icon;
 
