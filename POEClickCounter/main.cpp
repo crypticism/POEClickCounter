@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     QWidget::connect(&ClickDisplay::instance(), &ClickDisplay::setIsActive, &ClickDisplay::setIsCheckingActive);
 
     ClickDisplay::instance().setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
+    ClickDisplay::instance().setAttribute(Qt::WA_TranslucentBackground);
     ClickDisplay::instance().show();
 
     SystemTrayIcon icon;

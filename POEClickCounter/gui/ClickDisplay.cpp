@@ -29,10 +29,6 @@ ClickDisplay::ClickDisplay(QWidget *parent)
 	hh_mouse_hook = SetWindowsHookEx(WH_MOUSE_LL, mouse_hook, hInstance, 0);
 	hh_keyboard_hook = SetWindowsHookEx(WH_KEYBOARD_LL, keyboard_hook, hInstance, 0);
 
-    // Configure lock/unlock button to have an icon and toggle lock when clicked
-    setIcon(lock_icon);
-    connect(ui->lock_unlock_button, SIGNAL(clicked()), this, SLOT(toggleLock()));
-
     // Load counts into values
     ui->l_click_value->setText(calculateLabel(getValueFromJson(LEFT_CLICK)));
     ui->m_click_value->setText(calculateLabel(getValueFromJson(MIDDLE_CLICK)));

@@ -37,17 +37,6 @@ public:
 public slots:
     void dispatchUpdate(std::wstring);
     
-    // Toggles the locked status and icon when the lock button is pressed
-    void toggleLock() {
-        locked = !locked;
-        if (locked) {
-            setIcon(lock_icon);
-        }
-        else {
-            setIcon(unlock_icon);
-        }
-    };
-    
     // Check whether the application is open or not
     void isApplicationActive() {
         // Reset checking value to false, as we can only determine whether it is open
@@ -87,10 +76,6 @@ protected:
         old_pos = evt->globalPos();
         File::update_settings(L"x_pos", json::value(old_pos.x()));
         File::update_settings(L"y_pos", json::value(old_pos.y()));
-    }
-
-    void setIcon(QIcon icon) {
-        ui->lock_unlock_button->setIcon(icon);
     }
 
 signals:
