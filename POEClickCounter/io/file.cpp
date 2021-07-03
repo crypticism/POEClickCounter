@@ -10,6 +10,7 @@ namespace File
 	constexpr const wchar_t* data_filename = L"click_data.json";
 
 	json::JsonObject data;
+	json::JsonObject session;
 	json::JsonObject settings;
 
 	std::wstring get_save_folder_location() {
@@ -33,6 +34,14 @@ namespace File
 
 	std::wstring get_settings_file_location() {
 		return get_save_folder_location() + settings_filename;
+	}
+
+	void reset_session_data() {
+		session.SetNamedValue(L"left_click", json::value(0.0));
+		session.SetNamedValue(L"middle_click", json::value(0.0));
+		session.SetNamedValue(L"right_click", json::value(0.0));
+		session.SetNamedValue(L"skill", json::value(0.0));
+		session.SetNamedValue(L"flask", json::value(0.0));
 	}
 
 	void save_data() {
@@ -71,7 +80,11 @@ namespace File
 		return data;
 	}
 
+	json::JsonObject& get_session_data() {
+		return session;
+	}
+
 	json::JsonObject& get_settings() {
 		return settings;
-	}
+	}	
 }

@@ -4,7 +4,7 @@
 
 #include "SystemTrayIcon.h"
 
-#include "ClickDisplay.h"
+#include "StackedDisplayContainer.h"
 #include "../io/file.h"
 #include "../io/ini.h"
 
@@ -30,7 +30,6 @@ SystemTrayIcon::~SystemTrayIcon()
 {
 }
 
-
 void SystemTrayIcon::setVisible(bool visible) {
     quitAction->setEnabled(visible);
     QDialog::setVisible(visible);
@@ -42,16 +41,22 @@ void SystemTrayIcon::refreshKeybinds() {
 
 void SystemTrayIcon::createActions()
 {
+    resetSessionDataAction = new QAction(tr("&Reset Session Data"), this);
+    connect(resetSessionDataAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::resetSessionData);
+
+    toggleGUIModeAction = new QAction(tr("&Toggle GUI Mode"), this);
+    connect(toggleGUIModeAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::toggleGUIMode);
+
     toggleGUILockAction = new QAction(tr("&Unlock GUI"), this);
-    connect(toggleGUILockAction, &QAction::triggered, &ClickDisplay::instance(), &ClickDisplay::toggleLock);
+    connect(toggleGUILockAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::toggleLock);
     connect(toggleGUILockAction, &QAction::triggered, this, &SystemTrayIcon::toggleLock);
 
     toggleNeverShowAction = new QAction(tr("&Never Show GUI"), this);
-    connect(toggleNeverShowAction, &QAction::triggered, &ClickDisplay::instance(), &ClickDisplay::neverShow);
+    connect(toggleNeverShowAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::neverShow);
     connect(toggleNeverShowAction, &QAction::triggered, this, &SystemTrayIcon::toggleNeverShow);
 
-    refreshAction = new QAction(tr("&Refresh Keybinds"), this);
-    connect(refreshAction, &QAction::triggered, this, &SystemTrayIcon::refreshKeybinds);
+    refreshKeybindAction = new QAction(tr("&Refresh Keybinds"), this);
+    connect(refreshKeybindAction, &QAction::triggered, this, &SystemTrayIcon::refreshKeybinds);
 
     quitAction = new QAction(tr("&Quit"), this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
@@ -60,10 +65,17 @@ void SystemTrayIcon::createActions()
 void SystemTrayIcon::createTrayIcon()
 {
     trayIconMenu = new QMenu(this);
+    trayIconMenu->addAction(resetSessionDataAction);
+    trayIconMenu->addAction(refreshKeybindAction);
+
+    trayIconMenu->addSeparator();
+
+    trayIconMenu->addAction(toggleGUIModeAction);
     trayIconMenu->addAction(toggleGUILockAction);
     trayIconMenu->addAction(toggleNeverShowAction);
-    trayIconMenu->addAction(refreshAction);
+
     trayIconMenu->addSeparator();
+
     trayIconMenu->addAction(quitAction);
 
 
@@ -95,4 +107,5 @@ void SystemTrayIcon::toggleLock()
     else {
         toggleGUILockAction->setText(tr("&Lock GUI"));
     }
+    File::save_settings();
 }

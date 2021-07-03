@@ -61,7 +61,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>.\gui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\gui;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(Qt_LIBS_);%(AdditionalDependencies);runtimeobject.lib</AdditionalDependencies>
@@ -69,7 +69,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.\gui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\gui;.\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -100,7 +100,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="POEClickCounter.qrc" />
-    <ClCompile Include="gui\ClickDisplay.cpp" />
+    <ClCompile Include="gui\StackedDisplayContainer.cpp" />
     <ClCompile Include="gui\SystemTrayIcon.cpp" />
     <ClCompile Include="io\file.cpp" />
     <ClCompile Include="io\ini.cpp" />
@@ -108,19 +108,20 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="gui\SystemTrayIcon.h" />
+    <QtMoc Include="gui\StackedDisplayContainer.h" />
     <ClInclude Include="io\ini.h" />
     <ClInclude Include="resource.h" />
-    <QtMoc Include="gui\ClickDisplay.h" />
     <ClInclude Include="io\file.h" />
     <ClInclude Include="io\input.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="utils\data.h" />
     <ClInclude Include="utils\json.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="POEClickCounter.rc" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="gui\ClickDisplay.ui" />
+    <QtUic Include="gui\StackedDisplayContainer.ui" />
     <QtUic Include="gui\SystemTrayIcon.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

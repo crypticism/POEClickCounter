@@ -37,18 +37,18 @@
     <ClCompile Include="io\ini.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gui\ClickDisplay.cpp">
+    <ClCompile Include="gui\SystemTrayIcon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gui\SystemTrayIcon.cpp">
+    <ClCompile Include="gui\StackedDisplayContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="gui\ClickDisplay.h">
+    <QtMoc Include="gui\SystemTrayIcon.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="gui\SystemTrayIcon.h">
+    <QtMoc Include="gui\StackedDisplayContainer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -71,6 +71,9 @@
     <ClInclude Include="io\ini.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="utils\data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="POEClickCounter.rc">
@@ -78,10 +81,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="gui\ClickDisplay.ui">
+    <QtUic Include="gui\SystemTrayIcon.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="gui\SystemTrayIcon.ui">
+    <QtUic Include="gui\StackedDisplayContainer.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

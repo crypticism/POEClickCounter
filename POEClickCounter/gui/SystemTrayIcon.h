@@ -9,7 +9,6 @@
 #include <QSpinBox>
 #include <QTextEdit>
 
-#include "ClickDisplay.h"
 #include "ui_SystemTrayIcon.h"
 
 class SystemTrayIcon : public QDialog
@@ -34,9 +33,11 @@ private:
 	bool locked = true;
 	bool never_show = false;
 
+	QAction* resetSessionDataAction;
+	QAction* toggleGUIModeAction;
 	QAction* toggleGUILockAction;
 	QAction* toggleNeverShowAction;
-	QAction* refreshAction;
+	QAction* refreshKeybindAction;
 
     QAction* minimizeAction;
     QAction* maximizeAction;

@@ -3,6 +3,8 @@
 #include "../pch.h"
 
 namespace File {
+	void reset_session_data();
+	
 	void save_data();
 	void save_settings();
 
@@ -12,5 +14,6 @@ namespace File {
 	void update_settings(std::wstring, json::JsonValue);
 
 	json::JsonObject& get_data();
+	json::JsonObject& get_session_data();
 	json::JsonObject& get_settings();
 }
