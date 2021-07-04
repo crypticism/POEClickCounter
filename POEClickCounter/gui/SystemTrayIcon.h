@@ -25,6 +25,7 @@ public slots:
 	void refreshKeybinds();
 	void toggleNeverShow();
 	void toggleLock();
+	void toggleCountLeftCLickAsSkill();
 
 private:
 	void createActions();
@@ -33,6 +34,7 @@ private:
 	bool locked = true;
 	bool never_show = false;
 
+	QAction* toggleCountLeftClickAsSkillAction;
 	QAction* resetSessionDataAction;
 	QAction* toggleGUIModeAction;
 	QAction* toggleGUILockAction;

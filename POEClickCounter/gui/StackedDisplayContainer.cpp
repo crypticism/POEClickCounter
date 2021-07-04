@@ -100,19 +100,31 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
         std::wstring title = get_active_window();
 
         if (title == application) {
-            // Skills can be bound to mouse buttons
-            if (INI::is_skill_code(VK_LBUTTON)) {
-                emit instance().dispatchEvent(SKILL_USE);
-            }
-
             switch (wParam) {
             case WM_LBUTTONUP:
+            {
+                // This is probably an inefficient way to do this
+                json::JsonObject settings = File::get_settings();
+                bool count_left_click_as_skill = settings.GetNamedBoolean(L"count_left_click_as_skill");
+
+                // Skills can be bound to mouse buttons, but POE uses the virtual keycodes for them
+                if (INI::is_skill_code(VK_LBUTTON) && count_left_click_as_skill) {
+                    emit instance().dispatchEvent(SKILL_USE);
+                }
                 emit instance().dispatchEvent(LEFT_CLICK);
                 break;
+            }
             case WM_RBUTTONUP:
+                if (INI::is_skill_code(VK_RBUTTON)) {
+                    emit instance().dispatchEvent(SKILL_USE);
+                }
                 emit instance().dispatchEvent(RIGHT_CLICK);
                 break;
+
             case WM_MBUTTONUP:
+                if (INI::is_skill_code(VK_MBUTTON)) {
+                    emit instance().dispatchEvent(SKILL_USE);
+                }
                 emit instance().dispatchEvent(MIDDLE_CLICK);
                 break;
             }
