@@ -18,6 +18,8 @@ Inspired by [timwalsh](https://github.com/timtwalsh/ClickCountR)'s AHK script
 
 * Automatically loads your keybinds
 
+* Settings and actions are available by right-clicking the system tray icon
+
 ## Screenshots
 
 ![GUI Overview](preview/Preview1.png)
