@@ -12,12 +12,6 @@
 
 #include "ui_StackedDisplayContainer.h"
 
-const std::wstring LEFT_CLICK = L"left_click";
-const std::wstring MIDDLE_CLICK = L"middle_click";
-const std::wstring RIGHT_CLICK = L"right_click";
-const std::wstring SKILL_USE = L"skill";
-const std::wstring FLASK_USE = L"flask";
-
 class StackedDisplayContainer : public QWidget
 {
 	Q_OBJECT

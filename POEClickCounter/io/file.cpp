@@ -1,8 +1,9 @@
 #include "../pch.h"
 
 #include <filesystem>
-
 #include <ShlObj.h>
+
+#include "file.h"
 
 namespace File
 {
@@ -37,16 +38,16 @@ namespace File
 	}
 
 	void reset_session_data() {
-		session.SetNamedValue(L"left_click", json::value(0.0));
-		session.SetNamedValue(L"middle_click", json::value(0.0));
-		session.SetNamedValue(L"right_click", json::value(0.0));
-		session.SetNamedValue(L"skill", json::value(0.0));
-		session.SetNamedValue(L"flask", json::value(0.0));
+		session.SetNamedValue(LEFT_CLICK, json::value(0.0));
+		session.SetNamedValue(MIDDLE_CLICK, json::value(0.0));
+		session.SetNamedValue(RIGHT_CLICK, json::value(0.0));
+		session.SetNamedValue(SKILL_USE, json::value(0.0));
+		session.SetNamedValue(FLASK_USE, json::value(0.0));
 	}
 
 	void save_data() {
 		// Avoid overwriting file with empty data if something goes wrong
-		if (!json::has(data, L"left_click", json::JsonValueType::Number)) {
+		if (!json::has(data, LEFT_CLICK, json::JsonValueType::Number)) {
 			return;
 		}
 		std::wstring save_file_location = get_data_file_location();

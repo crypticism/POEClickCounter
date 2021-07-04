@@ -23,8 +23,8 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
 
     // Set ui state based on saved setting
     json::JsonObject& settings = File::get_settings();
-    never_show = settings.GetNamedBoolean(L"never_show");
-    display_index = int(settings.GetNamedNumber(L"display_index"));
+    never_show = settings.GetNamedBoolean(NEVER_SHOW_GUI);
+    display_index = int(settings.GetNamedNumber(DISPLAY_INDEX));
     ui->WidgetContainer->setCurrentIndex(display_index);
 
     // Set up input listeners
@@ -59,8 +59,8 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     timer->start(3000);
 
     // Set window position based on config values
-    double x_pos = settings.GetNamedNumber(L"x_pos");
-    double y_pos = settings.GetNamedNumber(L"y_pos");
+    double x_pos = settings.GetNamedNumber(GUI_X_COORDINATE);
+    double y_pos = settings.GetNamedNumber(GUI_Y_COORDINATE);
     move(QPoint(int(x_pos), int(y_pos)));
 }
 
@@ -105,7 +105,7 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
             {
                 // This is probably an inefficient way to do this
                 json::JsonObject settings = File::get_settings();
-                bool count_left_click_as_skill = settings.GetNamedBoolean(L"count_left_click_as_skill");
+                bool count_left_click_as_skill = settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE);
 
                 // Skills can be bound to mouse buttons, but POE uses the virtual keycodes for them
                 if (INI::is_skill_code(VK_LBUTTON) && count_left_click_as_skill) {
@@ -249,7 +249,7 @@ void StackedDisplayContainer::toggleGUIMode() {
         display_index = 1;
     }
     ui->WidgetContainer->setCurrentIndex(display_index);
-    File::update_settings(L"display_index", json::value(double(display_index)));
+    File::update_settings(DISPLAY_INDEX, json::value(double(display_index)));
 }
 
 void StackedDisplayContainer::mousePressEvent(QMouseEvent* evt) {
@@ -266,8 +266,8 @@ void StackedDisplayContainer::mouseMoveEvent(QMouseEvent* evt)
     move(x() + delta.x(), y() + delta.y());
 
     old_pos = evt->globalPos();
-    File::update_settings(L"x_pos", json::value(this->x()));
-    File::update_settings(L"y_pos", json::value(this->y()));
+    File::update_settings(GUI_X_COORDINATE, json::value(this->x()));
+    File::update_settings(GUI_Y_COORDINATE, json::value(this->y()));
 }
 
 void StackedDisplayContainer::resetSessionData() {
