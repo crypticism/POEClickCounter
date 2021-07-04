@@ -33,6 +33,9 @@ int main(int argc, char *argv[])
     if (!json::has(settings, L"never_show", json::JsonValueType::Boolean)) {
         File::update_settings(L"never_show", json::value(false));
     }
+    if (!json::has(settings, L"count_left_click_as_skill", json::JsonValueType::Boolean)) {
+        File::update_settings(L"count_left_click_as_skill", json::value(false));
+    }
 
     // Connect signals for the stacked display container
     QWidget::connect(&StackedDisplayContainer::instance(), &StackedDisplayContainer::dispatchEvent, &StackedDisplayContainer::handleUpdate);

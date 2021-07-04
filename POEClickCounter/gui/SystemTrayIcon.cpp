@@ -49,6 +49,15 @@ void SystemTrayIcon::createActions()
     resetSessionDataAction = new QAction(tr("&Reset Session Data"), this);
     connect(resetSessionDataAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::resetSessionData);
 
+    json::JsonObject settings = File::get_settings();
+    bool count_left_click_as_skill = settings.GetNamedBoolean(L"count_left_click_as_skill");
+
+    toggleCountLeftClickAsSkillAction = new QAction(tr("&Count LMB as Skill"), this);
+    if (count_left_click_as_skill) {
+        toggleCountLeftClickAsSkillAction->setText(tr("&Do Not Count LMB as Skill"));
+    }
+    connect(toggleCountLeftClickAsSkillAction, &QAction::triggered, this, &SystemTrayIcon::toggleCountLeftCLickAsSkill);
+
     toggleGUIModeAction = new QAction(tr("&Toggle GUI Mode"), this);
     connect(toggleGUIModeAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::toggleGUIMode);
 
@@ -56,7 +65,11 @@ void SystemTrayIcon::createActions()
     connect(toggleGUILockAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::toggleLock);
     connect(toggleGUILockAction, &QAction::triggered, this, &SystemTrayIcon::toggleLock);
 
+    bool never_show = settings.GetNamedBoolean(L"never_show");
     toggleNeverShowAction = new QAction(tr("&Never Show GUI"), this);
+    if (never_show) {
+        toggleNeverShowAction->setText(tr("&Show GUI"));
+    }
     connect(toggleNeverShowAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::neverShow);
     connect(toggleNeverShowAction, &QAction::triggered, this, &SystemTrayIcon::toggleNeverShow);
 
@@ -75,6 +88,7 @@ void SystemTrayIcon::createTrayIcon()
 
     trayIconMenu->addSeparator();
 
+    trayIconMenu->addAction(toggleCountLeftClickAsSkillAction);
     trayIconMenu->addAction(toggleGUIModeAction);
     trayIconMenu->addAction(toggleGUILockAction);
     trayIconMenu->addAction(toggleNeverShowAction);
@@ -113,4 +127,17 @@ void SystemTrayIcon::toggleLock()
         toggleGUILockAction->setText(tr("&Lock GUI"));
     }
     File::save_settings();
+}
+
+void SystemTrayIcon::toggleCountLeftCLickAsSkill() {
+    json::JsonObject settings = File::get_settings();
+    bool count_left_click_as_skill = !settings.GetNamedBoolean(L"count_left_click_as_skill");
+    File::update_settings(L"count_left_click_as_skill", json::value(count_left_click_as_skill));
+
+    if (count_left_click_as_skill) {
+        toggleCountLeftClickAsSkillAction->setText(tr("&Do Not Count LMB as Skills"));
+    }
+    else {
+        toggleCountLeftClickAsSkillAction->setText(tr("&Count LMB as Skills"));
+    }
 }
