@@ -8,24 +8,26 @@
 #include "../io/file.h"
 #include "../io/ini.h"
 
+
+
 SystemTrayIcon::SystemTrayIcon()
 {
     // Set ui state based on saved setting
     json::JsonObject& settings = File::get_settings();
-    never_show = settings.GetNamedBoolean(L"never_show");
+    never_show = settings.GetNamedBoolean(NEVER_SHOW_GUI);
 
 	createActions();
 	createTrayIcon();
 
     if (never_show) {
-        toggleNeverShowAction->setText(tr("&Show GUI"));
+        toggleNeverShowAction->setText(SHOW_GUI_STRING);
     }
 
     TCHAR buffer[1024];
     GetModuleFileName(NULL, buffer, 1024);
     std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
 
-    QString path = QString::fromStdWString(std::wstring(buffer).substr(0, pos)) + QString::fromStdString("\\assets\\light_icon.ico");
+    QString path = QString::fromStdWString(std::wstring(buffer).substr(0, pos)) + ICON_PATH;
     QIcon icon = QIcon(path);
     trayIcon->setIcon(icon);
     trayIcon->show();
@@ -46,37 +48,37 @@ void SystemTrayIcon::refreshKeybinds() {
 
 void SystemTrayIcon::createActions()
 {
-    resetSessionDataAction = new QAction(tr("&Reset Session Data"), this);
+    resetSessionDataAction = new QAction(RESET_SESSION_STRING, this);
     connect(resetSessionDataAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::resetSessionData);
 
     json::JsonObject settings = File::get_settings();
-    bool count_left_click_as_skill = settings.GetNamedBoolean(L"count_left_click_as_skill");
+    bool count_left_click_as_skill = settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE);
 
-    toggleCountLeftClickAsSkillAction = new QAction(tr("&Count LMB as Skill"), this);
+    toggleCountLeftClickAsSkillAction = new QAction(COUNT_LMB_AS_SKILL_USE_STRING, this);
     if (count_left_click_as_skill) {
-        toggleCountLeftClickAsSkillAction->setText(tr("&Do Not Count LMB as Skill"));
+        toggleCountLeftClickAsSkillAction->setText(DO_NOT_COUNT_LMB_AS_SKILL_USE_STRING);
     }
     connect(toggleCountLeftClickAsSkillAction, &QAction::triggered, this, &SystemTrayIcon::toggleCountLeftCLickAsSkill);
 
-    toggleGUIModeAction = new QAction(tr("&Toggle GUI Mode"), this);
+    toggleGUIModeAction = new QAction(TOGGLE_GUI_MODE_STRING, this);
     connect(toggleGUIModeAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::toggleGUIMode);
 
-    toggleGUILockAction = new QAction(tr("&Unlock GUI"), this);
+    toggleGUILockAction = new QAction(UNLOCK_GUI_STRING, this);
     connect(toggleGUILockAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::toggleLock);
     connect(toggleGUILockAction, &QAction::triggered, this, &SystemTrayIcon::toggleLock);
 
-    bool never_show = settings.GetNamedBoolean(L"never_show");
-    toggleNeverShowAction = new QAction(tr("&Never Show GUI"), this);
+    bool never_show = settings.GetNamedBoolean(NEVER_SHOW_GUI);
+    toggleNeverShowAction = new QAction(NEVER_SHOW_GUI_STRING, this);
     if (never_show) {
-        toggleNeverShowAction->setText(tr("&Show GUI"));
+        toggleNeverShowAction->setText(SHOW_GUI_STRING);
     }
     connect(toggleNeverShowAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::neverShow);
     connect(toggleNeverShowAction, &QAction::triggered, this, &SystemTrayIcon::toggleNeverShow);
 
-    refreshKeybindAction = new QAction(tr("&Refresh Keybinds"), this);
+    refreshKeybindAction = new QAction(REFRESH_KEYBINDS_STRING, this);
     connect(refreshKeybindAction, &QAction::triggered, this, &SystemTrayIcon::refreshKeybinds);
 
-    quitAction = new QAction(tr("&Quit"), this);
+    quitAction = new QAction(QUIT_STRING, this);
     connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
 }
 
@@ -107,13 +109,13 @@ void SystemTrayIcon::toggleNeverShow()
     never_show = !never_show;
 
     if (never_show) {
-        toggleNeverShowAction->setText(tr("&Show GUI"));
+        toggleNeverShowAction->setText(SHOW_GUI_STRING);
     }
     else {
-        toggleNeverShowAction->setText(tr("&Never Show GUI"));
+        toggleNeverShowAction->setText(NEVER_SHOW_GUI_STRING);
     }
 
-    File::update_settings(L"never_show", json::value(never_show));
+    File::update_settings(NEVER_SHOW_GUI, json::value(never_show));
 }
 
 void SystemTrayIcon::toggleLock()
@@ -121,23 +123,23 @@ void SystemTrayIcon::toggleLock()
     locked = !locked;
 
     if (locked) {
-        toggleGUILockAction->setText(tr("&Unlock GUI"));
+        toggleGUILockAction->setText(UNLOCK_GUI_STRING);
     }
     else {
-        toggleGUILockAction->setText(tr("&Lock GUI"));
+        toggleGUILockAction->setText(LOCK_GUI_STRING);
     }
     File::save_settings();
 }
 
 void SystemTrayIcon::toggleCountLeftCLickAsSkill() {
     json::JsonObject settings = File::get_settings();
-    bool count_left_click_as_skill = !settings.GetNamedBoolean(L"count_left_click_as_skill");
-    File::update_settings(L"count_left_click_as_skill", json::value(count_left_click_as_skill));
+    bool count_left_click_as_skill = !settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE);
+    File::update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(count_left_click_as_skill));
 
     if (count_left_click_as_skill) {
-        toggleCountLeftClickAsSkillAction->setText(tr("&Do Not Count LMB as Skills"));
+        toggleCountLeftClickAsSkillAction->setText(DO_NOT_COUNT_LMB_AS_SKILL_USE_STRING);
     }
     else {
-        toggleCountLeftClickAsSkillAction->setText(tr("&Count LMB as Skills"));
+        toggleCountLeftClickAsSkillAction->setText(COUNT_LMB_AS_SKILL_USE_STRING);
     }
 }

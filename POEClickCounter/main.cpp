@@ -21,20 +21,20 @@ int main(int argc, char *argv[])
 
     // Initialize positions in settings if first launch
     json::JsonObject& settings = File::get_settings();
-    if (!json::has(settings, L"x_pos", json::JsonValueType::Number)) {
-        File::update_settings(L"x_pos", json::value(500));
+    if (!json::has(settings, GUI_X_COORDINATE, json::JsonValueType::Number)) {
+        File::update_settings(GUI_X_COORDINATE, json::value(500));
     }
-    if (!json::has(settings, L"y_pos", json::JsonValueType::Number)) {
-        File::update_settings(L"y_pos", json::value(500));
+    if (!json::has(settings, GUI_Y_COORDINATE, json::JsonValueType::Number)) {
+        File::update_settings(GUI_Y_COORDINATE, json::value(500));
     }
-    if (!json::has(settings, L"display_index", json::JsonValueType::Number)) {
-        File::update_settings(L"display_index", json::value(1));
+    if (!json::has(settings, DISPLAY_INDEX, json::JsonValueType::Number)) {
+        File::update_settings(DISPLAY_INDEX, json::value(1));
     }
-    if (!json::has(settings, L"never_show", json::JsonValueType::Boolean)) {
-        File::update_settings(L"never_show", json::value(false));
+    if (!json::has(settings, NEVER_SHOW_GUI, json::JsonValueType::Boolean)) {
+        File::update_settings(NEVER_SHOW_GUI, json::value(false));
     }
-    if (!json::has(settings, L"count_left_click_as_skill", json::JsonValueType::Boolean)) {
-        File::update_settings(L"count_left_click_as_skill", json::value(false));
+    if (!json::has(settings, COUNT_LEFT_CLICK_AS_SKILL_USE, json::JsonValueType::Boolean)) {
+        File::update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(false));
     }
 
     // Connect signals for the stacked display container
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     StackedDisplayContainer::instance().setAttribute(Qt::WA_TranslucentBackground);
 
     // Show the window by default if user has not set it to never show
-    if (!settings.GetNamedBoolean(L"never_show")) {
+    if (!settings.GetNamedBoolean(NEVER_SHOW_GUI)) {
         StackedDisplayContainer::instance().show();
     }
 
