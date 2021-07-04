@@ -5,9 +5,9 @@
 
 #include "ui_StackedDisplayContainer.h"
 #include "StackedDisplayContainer.h"
-#include "../io/file.h"
+#include "../io/data.h"
 #include "../io/ini.h"
-#include "../utils/data.h"
+#include "../utils/utils.h"
 
 StackedDisplayContainer& StackedDisplayContainer::instance()
 {
@@ -22,7 +22,7 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
 	ui->setupUi(this);
 
     // Set ui state based on saved setting
-    json::JsonObject& settings = File::get_settings();
+    json::JsonObject& settings = Data::get_settings();
     never_show = settings.GetNamedBoolean(NEVER_SHOW_GUI);
     display_index = int(settings.GetNamedNumber(DISPLAY_INDEX));
     ui->WidgetContainer->setCurrentIndex(display_index);
@@ -33,24 +33,24 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     hh_keyboard_hook = SetWindowsHookEx(WH_KEYBOARD_LL, keyboard_hook, hInstance, 0);
 
     // Load counts into values
-    ui->l_click_value->setText(calculateLabel(getValueFromJson(LEFT_CLICK)));
-    ui->l_click_value_2->setText(calculateLabel(getValueFromJson(LEFT_CLICK)));
+    ui->l_click_value->setText(calculateLabel(Data::get_data_value(LEFT_CLICK)));
+    ui->l_click_value_2->setText(calculateLabel(Data::get_data_value(LEFT_CLICK)));
     ui->lmb_session_value->setText(QString::fromStdString("0"));
 
-    ui->m_click_value->setText(calculateLabel(getValueFromJson(MIDDLE_CLICK)));
-    ui->m_click_value_2->setText(calculateLabel(getValueFromJson(MIDDLE_CLICK)));
+    ui->m_click_value->setText(calculateLabel(Data::get_data_value(MIDDLE_CLICK)));
+    ui->m_click_value_2->setText(calculateLabel(Data::get_data_value(MIDDLE_CLICK)));
     ui->mmb_session_value->setText(QString::fromStdString("0"));
     
-    ui->r_click_value->setText(calculateLabel(getValueFromJson(RIGHT_CLICK)));
-    ui->r_click_value_2->setText(calculateLabel(getValueFromJson(RIGHT_CLICK)));
+    ui->r_click_value->setText(calculateLabel(Data::get_data_value(RIGHT_CLICK)));
+    ui->r_click_value_2->setText(calculateLabel(Data::get_data_value(RIGHT_CLICK)));
     ui->rmb_session_value->setText(QString::fromStdString("0"));
 
-    ui->skill_value->setText(calculateLabel(getValueFromJson(SKILL_USE)));
-    ui->skill_value_2->setText(calculateLabel(getValueFromJson(SKILL_USE)));
+    ui->skill_value->setText(calculateLabel(Data::get_data_value(SKILL_USE)));
+    ui->skill_value_2->setText(calculateLabel(Data::get_data_value(SKILL_USE)));
     ui->skill_session_value->setText(QString::fromStdString("0"));
 
-    ui->flask_value->setText(calculateLabel(getValueFromJson(FLASK_USE)));
-    ui->flask_value_2->setText(calculateLabel(getValueFromJson(FLASK_USE)));
+    ui->flask_value->setText(calculateLabel(Data::get_data_value(FLASK_USE)));
+    ui->flask_value_2->setText(calculateLabel(Data::get_data_value(FLASK_USE)));
     ui->flask_session_value->setText(QString::fromStdString("0"));
 
     // Create timer that checks if window is open to show/hide GUI automatically
@@ -66,8 +66,8 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
 
 StackedDisplayContainer::~StackedDisplayContainer()
 {
-    File::save_data();
-    File::save_settings();
+    Data::save_data();
+    Data::save_settings();
     UnhookWindowsHookEx(this->hh_mouse_hook);
     UnhookWindowsHookEx(this->hh_keyboard_hook);
 }
@@ -104,7 +104,7 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
             case WM_LBUTTONUP:
             {
                 // This is probably an inefficient way to do this
-                json::JsonObject settings = File::get_settings();
+                json::JsonObject settings = Data::get_settings();
                 bool count_left_click_as_skill = settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE);
 
                 // Skills can be bound to mouse buttons, but POE uses the virtual keycodes for them
@@ -159,14 +159,11 @@ LRESULT CALLBACK StackedDisplayContainer::keyboard_hook(int nCode, WPARAM wParam
 
 // Increments the UI and data store when an event is received
 void StackedDisplayContainer::handleUpdate(std::wstring event_type) {
-    double nValue = getValueFromJson(event_type) + 1;
-    double nSessionValue = getValueFromSession(event_type) + 1;
+    double nValue = Data::get_data_value(event_type) + 1;
+    double nSessionValue = Data::get_session_value(event_type) + 1;
     
-    json::JsonObject& data = File::get_data();
-    data.SetNamedValue(event_type, json::value(nValue));
-
-    json::JsonObject& session = File::get_session_data();
-    session.SetNamedValue(event_type, json::value(nSessionValue));
+    Data::update_data(event_type, json::value(nValue));
+    Data::update_session(event_type, json::value(nSessionValue));
 
     QString sValue = calculateLabel(nValue);
     QString sSessionValue = QString::fromStdString("+") + calculateLabel(nSessionValue);
@@ -249,7 +246,7 @@ void StackedDisplayContainer::toggleGUIMode() {
         display_index = 1;
     }
     ui->WidgetContainer->setCurrentIndex(display_index);
-    File::update_settings(DISPLAY_INDEX, json::value(double(display_index)));
+    Data::update_settings(DISPLAY_INDEX, json::value(double(display_index)));
 }
 
 void StackedDisplayContainer::mousePressEvent(QMouseEvent* evt) {
@@ -266,12 +263,12 @@ void StackedDisplayContainer::mouseMoveEvent(QMouseEvent* evt)
     move(x() + delta.x(), y() + delta.y());
 
     old_pos = evt->globalPos();
-    File::update_settings(GUI_X_COORDINATE, json::value(this->x()));
-    File::update_settings(GUI_Y_COORDINATE, json::value(this->y()));
+    Data::update_settings(GUI_X_COORDINATE, json::value(this->x()));
+    Data::update_settings(GUI_Y_COORDINATE, json::value(this->y()));
 }
 
 void StackedDisplayContainer::resetSessionData() {
-    File::reset_session_data();
+    Data::reset_session_data();
     ui->lmb_session_value->setText(QString::fromStdString("0"));
     ui->mmb_session_value->setText(QString::fromStdString("0"));
     ui->rmb_session_value->setText(QString::fromStdString("0"));

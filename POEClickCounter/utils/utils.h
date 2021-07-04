@@ -1,31 +1,10 @@
+#pragma once
+
 #include "../pch.h"
-#include "../io/file.h"
 
 #include <QString>
 
 const QString suffixes[6] = { "", "K", "M", "B", "T", "Q" };
-
-// Retrieves a value from the session data store based on the event
-// Could go into the file managing other data stores
-double getValueFromSession(std::wstring event_type) {
-    double value = 0.0;
-    json::JsonObject& session = File::get_session_data();
-    if (json::has(session, event_type, json::JsonValueType::Number)) {
-        value = floor(session.GetNamedNumber(event_type));
-    }
-    return value;
-}
-
-// Retrieves a value from the data store based on the event
-// Could go into the file managing other data stores
-double getValueFromJson(std::wstring event_type) {
-    double value = 0.0;
-    json::JsonObject& data = File::get_data();
-    if (json::has(data, event_type, json::JsonValueType::Number)) {
-        value = floor(data.GetNamedNumber(event_type));
-    }
-    return value;
-}
 
 // Converts a double value into a truncated string with a suffix to save space
 QString calculateLabel(double value) {

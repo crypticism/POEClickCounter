@@ -5,15 +5,13 @@
 #include "SystemTrayIcon.h"
 
 #include "StackedDisplayContainer.h"
-#include "../io/file.h"
+#include "../io/data.h"
 #include "../io/ini.h"
-
-
 
 SystemTrayIcon::SystemTrayIcon()
 {
     // Set ui state based on saved setting
-    json::JsonObject& settings = File::get_settings();
+    json::JsonObject& settings = Data::get_settings();
     never_show = settings.GetNamedBoolean(NEVER_SHOW_GUI);
 
 	createActions();
@@ -51,7 +49,7 @@ void SystemTrayIcon::createActions()
     resetSessionDataAction = new QAction(RESET_SESSION_STRING, this);
     connect(resetSessionDataAction, &QAction::triggered, &StackedDisplayContainer::instance(), &StackedDisplayContainer::resetSessionData);
 
-    json::JsonObject settings = File::get_settings();
+    json::JsonObject settings = Data::get_settings();
     bool count_left_click_as_skill = settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE);
 
     toggleCountLeftClickAsSkillAction = new QAction(COUNT_LMB_AS_SKILL_USE_STRING, this);
@@ -115,7 +113,7 @@ void SystemTrayIcon::toggleNeverShow()
         toggleNeverShowAction->setText(NEVER_SHOW_GUI_STRING);
     }
 
-    File::update_settings(NEVER_SHOW_GUI, json::value(never_show));
+    Data::update_settings(NEVER_SHOW_GUI, json::value(never_show));
 }
 
 void SystemTrayIcon::toggleLock()
@@ -128,13 +126,13 @@ void SystemTrayIcon::toggleLock()
     else {
         toggleGUILockAction->setText(LOCK_GUI_STRING);
     }
-    File::save_settings();
+    Data::save_settings();
 }
 
 void SystemTrayIcon::toggleCountLeftCLickAsSkill() {
-    json::JsonObject settings = File::get_settings();
+    json::JsonObject settings = Data::get_settings();
     bool count_left_click_as_skill = !settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE);
-    File::update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(count_left_click_as_skill));
+    Data::update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(count_left_click_as_skill));
 
     if (count_left_click_as_skill) {
         toggleCountLeftClickAsSkillAction->setText(DO_NOT_COUNT_LMB_AS_SKILL_USE_STRING);
