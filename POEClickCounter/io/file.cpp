@@ -20,7 +20,7 @@ namespace File
 		std::wstring result{ local_app_path };
 		CoTaskMemFree(local_app_path);
 
-		result += L"\\POECounter\\";
+		result += L"\\POEClickCounter\\";
 		std::filesystem::path save_path(result);
 		if (!std::filesystem::exists(save_path))
 		{
