@@ -31,7 +31,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="io\file.cpp">
+    <ClCompile Include="io\data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="io\ini.cpp">
@@ -62,7 +62,7 @@
     <ClInclude Include="io\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="io\file.h">
+    <ClInclude Include="io\data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -71,7 +71,7 @@
     <ClInclude Include="io\ini.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils\data.h">
+    <ClInclude Include="utils\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

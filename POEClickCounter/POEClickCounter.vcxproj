@@ -107,19 +107,19 @@
     <QtRcc Include="POEClickCounter.qrc" />
     <ClCompile Include="gui\StackedDisplayContainer.cpp" />
     <ClCompile Include="gui\SystemTrayIcon.cpp" />
-    <ClCompile Include="io\file.cpp" />
+    <ClCompile Include="io\data.cpp" />
     <ClCompile Include="io\ini.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="utils\utils.h" />
     <QtMoc Include="gui\SystemTrayIcon.h" />
     <QtMoc Include="gui\StackedDisplayContainer.h" />
     <ClInclude Include="io\ini.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="io\file.h" />
+    <ClInclude Include="io\data.h" />
     <ClInclude Include="io\input.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="utils\data.h" />
     <ClInclude Include="utils\json.h" />
   </ItemGroup>
   <ItemGroup>

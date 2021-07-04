@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef FILE_H
-#define FILE_H
+#ifndef DATA_H
+#define DATA_H
 
 #include "../pch.h"
 
@@ -17,20 +17,25 @@ extern const inline std::wstring GUI_X_COORDINATE = L"x_pos";
 extern const inline std::wstring GUI_Y_COORDINATE = L"y_pos";
 extern const inline std::wstring COUNT_LEFT_CLICK_AS_SKILL_USE = L"count_left_click_as_skill";
 
-namespace File {
+namespace Data {
 	void reset_session_data();
 	
 	void save_data();
 	void save_settings();
+	
+	double get_data_value(std::wstring);
+	double get_session_value(std::wstring);
 
 	void load_data();
 	void load_settings();
 
+	void update_data(std::wstring, json::JsonValue);
 	void update_settings(std::wstring, json::JsonValue);
+	void update_session(std::wstring, json::JsonValue);
 
 	json::JsonObject& get_data();
 	json::JsonObject& get_session_data();
 	json::JsonObject& get_settings();
 }
 
-#endif // FILE_H
+#endif // DATA_H
