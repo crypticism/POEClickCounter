@@ -82,7 +82,7 @@ BOOL CALLBACK StackedDisplayContainer::EnumWindowsProc(HWND hwnd, LPARAM lParam)
     LPWSTR title = reinterpret_cast<LPWSTR>(&buffer[0]);
     GetWindowText(hwnd, title, length);
 
-    if (IsWindowVisible(hwnd) && title == application) {
+    if (IsWindow(hwnd) && title == application) {
         emit instance().setApplicationActive();
         return TRUE;
     }
