@@ -32,6 +32,10 @@ Without session stats:
 
 ![No Session Stats](preview/Preview3.png)
 
+Settings:
+
+![Settings](preview/Preview4.png)
+
 ## Installation
 
 [Download](https://github.com/crypticism/POEClickCounter/releases) and extract the zip of the project to your desired location.

@@ -3,6 +3,7 @@
 #include <QCloseEvent>
 
 #include "../io/data.h"
+#include "../utils/utils.h"
 #include "StackedDisplayContainer.h"
 #include "SettingsForm.h"
 #include "ui_SettingsForm.h"
@@ -18,6 +19,8 @@ SettingsForm::SettingsForm(QWidget *parent)
 	ui(new Ui::SettingsForm)
 {
 	ui->setupUi(this);
+
+	this->setWindowIcon(get_icon());
 
 	json::JsonObject settings = Data::get_settings();
 

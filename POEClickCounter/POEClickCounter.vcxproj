@@ -131,6 +131,9 @@
     <QtUic Include="gui\StackedDisplayContainer.ui" />
     <QtUic Include="gui\SystemTrayIcon.ui" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\light_icon.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
     <Import Project="$(QtMsBuild)\qt.targets" />

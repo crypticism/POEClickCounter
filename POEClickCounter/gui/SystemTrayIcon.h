@@ -14,7 +14,7 @@
 
 #include "ui_SystemTrayIcon.h"
 
-const QString ICON_PATH = QString::fromStdString("\\assets\\light_icon.ico");
+
 
 const QString SETTINGS_STRING = QString::fromStdString("Settings");
 

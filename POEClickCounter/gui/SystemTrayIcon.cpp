@@ -7,19 +7,14 @@
 #include "StackedDisplayContainer.h"
 #include "../io/data.h"
 #include "../io/ini.h"
+#include "../utils/utils.h"
 
 SystemTrayIcon::SystemTrayIcon()
 {
 	createActions();
 	createTrayIcon();
-
-    TCHAR buffer[1024];
-    GetModuleFileName(NULL, buffer, 1024);
-    std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
-
-    QString path = QString::fromStdWString(std::wstring(buffer).substr(0, pos)) + ICON_PATH;
-    QIcon icon = QIcon(path);
-    trayIcon->setIcon(icon);
+    
+    trayIcon->setIcon(get_icon());
     trayIcon->show();
 }
 
