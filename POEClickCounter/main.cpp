@@ -3,9 +3,9 @@
 #include <Qt>
 #include <QtWidgets/QApplication>
 
+#include "gui/SettingsForm.h"
+#include "gui/StackedDisplayContainer.h"
 #include "gui/SystemTrayIcon.h"
-
-#include "StackedDisplayContainer.h"
 
 #include "io/data.h"
 #include "io/ini.h"
@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     }
 
     SystemTrayIcon icon;
+    SettingsForm form;
 
     return a.exec();
 }
