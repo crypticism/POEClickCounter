@@ -28,6 +28,20 @@ SettingsForm::SettingsForm(QWidget *parent)
 	ui->display_index->setChecked(!bool(int(settings.GetNamedNumber(DISPLAY_INDEX))));
 	ui->never_show->setChecked(settings.GetNamedBoolean(NEVER_SHOW_GUI));
 	ui->count_left_click_as_skill->setChecked(settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE));
+
+	// Initialize active fields
+	ui->left_click_visibility->setChecked(Data::is_count_visible(LEFT_CLICK));
+	ui->middle_click_visibility->setChecked(Data::is_count_visible(MIDDLE_CLICK));
+	ui->right_click_visibility->setChecked(Data::is_count_visible(RIGHT_CLICK));
+	ui->skill_use_visibility->setChecked(Data::is_count_visible(SKILL_USE));
+	ui->flask_use_visibility->setChecked(Data::is_count_visible(FLASK_USE));
+
+	// Connect fields to tracker display
+	connect(ui->left_click_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setLeftClickVisibility);
+	connect(ui->middle_click_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setMiddleClickVisibility);
+	connect(ui->right_click_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setRightClickVisibility);
+	connect(ui->skill_use_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setSkillUseVisibility);
+	connect(ui->flask_use_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setFlaskUseVisibility);
 	
 	connect(ui->display_index, &QCheckBox::stateChanged, this, &SettingsForm::displayIndexStateChanged);
 	connect(ui->never_show, &QCheckBox::stateChanged, this, &SettingsForm::neverShowStateChanged);

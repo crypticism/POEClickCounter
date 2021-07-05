@@ -36,9 +36,14 @@ public slots:
 	void handleUpdate(std::wstring);
 	void isApplicationActive();
 	void setIsCheckingActive();
-	void neverShow();
-	void toggleLock();
 	void resetSessionData();
+	void toggleLock();
+
+	void setLeftClickVisibility(int);
+	void setMiddleClickVisibility(int);
+	void setRightClickVisibility(int);
+	void setSkillUseVisibility(int);
+	void setFlaskUseVisibility(int);
 
 protected:
 	void mousePressEvent(QMouseEvent*);
@@ -51,6 +56,10 @@ signals:
 
 private:
 	Ui::StackedDisplayContainer *ui;
+
+	void updateWidth();
+
+	int container_width;
 
 	bool is_checking_whether_application_active = false;
 	bool is_application_active = false;

@@ -79,6 +79,16 @@ namespace Data
 			update_settings(DISPLAY_INDEX, json::value(0));
 			update_settings(NEVER_SHOW_GUI, json::value(false));
 			update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(false));
+
+			// Initialize visibility values
+			json::JsonObject visible_counts;
+			visible_counts.SetNamedValue(LEFT_CLICK, json::value(true));
+			visible_counts.SetNamedValue(MIDDLE_CLICK, json::value(true));
+			visible_counts.SetNamedValue(RIGHT_CLICK, json::value(true));
+			visible_counts.SetNamedValue(SKILL_USE, json::value(true));
+			visible_counts.SetNamedValue(FLASK_USE, json::value(true));
+
+			update_settings(VISIBLE_COUNTS, json::value(visible_counts));
 			save_settings();
 		}
 
@@ -116,6 +126,14 @@ namespace Data
 
 	void update_session(std::wstring field, json::JsonValue value) {
 		session.SetNamedValue(field, value);
+	}
+
+	void set_count_visibility(std::wstring field, json::JsonValue value) {
+		settings.GetNamedObject(VISIBLE_COUNTS).SetNamedValue(field, value);
+	}
+
+	bool is_count_visible(std::wstring field) {
+		return settings.GetNamedObject(VISIBLE_COUNTS).GetNamedBoolean(field);
 	}
 
 	json::JsonObject& get_data() {

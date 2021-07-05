@@ -4,6 +4,7 @@
 #define UTILS_H
 
 #include "../pch.h"
+#include "../io/data.h"
 
 #include <QString>
 #include <QIcon>
@@ -59,6 +60,16 @@ inline QIcon get_icon() {
 
     QString path = QString::fromStdWString(std::wstring(buffer).substr(0, pos)) + ICON_PATH;
     return QIcon(path);
+}
+
+inline int get_number_visible_counts() {
+    int count = 0;
+    for (std::wstring field : Data::fields) {
+        if (Data::is_count_visible(field)) {
+            count += 1;
+        }
+    }
+    return count;
 }
 
 #endif // UTILS_H

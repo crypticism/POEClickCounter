@@ -21,6 +21,8 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
 {
     ui->setupUi(this);
 
+    this->container_width = ui->LMBContainer->width();
+
     // Set ui state based on saved setting
     json::JsonObject &settings = Data::get_settings();
     ui->WidgetContainer->setCurrentIndex(int(settings.GetNamedNumber(DISPLAY_INDEX)));
@@ -50,6 +52,13 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     ui->flask_value->setText(calculateLabel(Data::get_data_value(FLASK_USE)));
     ui->flask_value_2->setText(calculateLabel(Data::get_data_value(FLASK_USE)));
     ui->flask_session_value->setText(QString::fromStdString("0"));
+
+    // Set container visibilities
+    setLeftClickVisibility(int(Data::is_count_visible(LEFT_CLICK)));
+    setMiddleClickVisibility(int(Data::is_count_visible(MIDDLE_CLICK)));
+    setRightClickVisibility(int(Data::is_count_visible(RIGHT_CLICK)));
+    setSkillUseVisibility(int(Data::is_count_visible(SKILL_USE)));
+    setFlaskUseVisibility(int(Data::is_count_visible(FLASK_USE)));
 
     // Create timer that checks if window is open to show/hide GUI automatically
     QTimer *timer = new QTimer(this);
@@ -250,27 +259,75 @@ void StackedDisplayContainer::setIsCheckingActive()
     is_checking_whether_application_active = true;
 }
 
-void StackedDisplayContainer::neverShow()
+void StackedDisplayContainer::setGUIMode(int display_index)
 {
-    json::JsonObject settings = Data::get_settings();
-    bool never_show = !settings.GetNamedBoolean(NEVER_SHOW_GUI);
+    ui->WidgetContainer->setCurrentIndex(display_index);
+}
 
-    Data::update_settings(NEVER_SHOW_GUI, json::value(never_show));
+void StackedDisplayContainer::setLeftClickVisibility(int state) {
+    bool active(state);
+    Data::set_count_visibility(LEFT_CLICK, json::value(active));
 
-    if (never_show)
-    {
-        this->hide();
-    }
+    ui->LMBContainer->setVisible(active);
+    ui->LMBContainer_2->setVisible(active);
+
+    updateWidth();
+}
+
+void StackedDisplayContainer::setMiddleClickVisibility(int state) {
+    bool active(state);
+    Data::set_count_visibility(MIDDLE_CLICK, json::value(active));
+
+    ui->MMBContainer->setVisible(active);
+    ui->MMBContainer_2->setVisible(active);
+
+    updateWidth();
+}
+
+void StackedDisplayContainer::setRightClickVisibility(int state) {
+    bool active(state);
+    Data::set_count_visibility(RIGHT_CLICK, json::value(active));
+
+    ui->RMBContainer->setVisible(active);
+    ui->RMBContainer_2->setVisible(active);
+
+    updateWidth();
+}
+
+void StackedDisplayContainer::setSkillUseVisibility(int state) {
+    bool active(state);
+    Data::set_count_visibility(SKILL_USE, json::value(active));
+
+    // I'm not sure why this is _2 and _3
+    ui->SkillContainer_2->setVisible(active);
+    ui->SkillContainer_3->setVisible(active);
+
+    updateWidth();
+}
+
+void StackedDisplayContainer::setFlaskUseVisibility(int state) {
+    bool active(state);
+    Data::set_count_visibility(FLASK_USE, json::value(active));
+
+    // I'm not sure on this one either
+    ui->FlaskContainer_2->setVisible(active);
+    ui->FlaskContainer_3->setVisible(active);
+
+    updateWidth();
+}
+
+void StackedDisplayContainer::updateWidth() {
+    int n_visibleCounts = get_number_visible_counts();
+    
+    int n_widthOfContainers = this->container_width * n_visibleCounts;
+    int n_widthofPadding = std::min(0, (n_visibleCounts - 1)) * 6;
+
+    this->setFixedWidth(n_widthOfContainers + n_widthofPadding);
 }
 
 void StackedDisplayContainer::toggleLock()
 {
     movement_locked = !movement_locked;
-}
-
-void StackedDisplayContainer::setGUIMode(int display_index)
-{
-    ui->WidgetContainer->setCurrentIndex(display_index);
 }
 
 void StackedDisplayContainer::mousePressEvent(QMouseEvent *evt)
