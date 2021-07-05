@@ -1,13 +1,18 @@
 #pragma once
 
+#ifndef UTILS_H
+#define UTILS_H
+
 #include "../pch.h"
 
 #include <QString>
+#include <QIcon>
 
+const QString ICON_PATH = QString::fromStdString("\\assets\\light_icon.ico");
 const QString suffixes[6] = { "", "K", "M", "B", "T", "Q" };
 
 // Converts a double value into a truncated string with a suffix to save space
-QString calculateLabel(double value) {
+inline QString calculateLabel(double value) {
     double c = value == 0.0 ? 0.0 : floor(log10(abs(value)) / 3);
     double m = std::min(5.0, c);
     double max = std::max(0.0, m);
@@ -31,7 +36,7 @@ QString calculateLabel(double value) {
 
 // Find the name of the window that cursor is currently over
 // Seems to correctly grab only the top-most window
-std::wstring get_active_window() {
+inline std::wstring get_active_window() {
     POINT point;
     GetCursorPos(&point);
     HWND new_hwnd = WindowFromPoint(point);
@@ -44,3 +49,16 @@ std::wstring get_active_window() {
     GetWindowText(new_hwnd, title, nTitleLength);
     return title;
 }
+
+// Helper function to get the icon the application uses
+// TODO: Find a way to only calculate this once
+inline QIcon get_icon() {
+    TCHAR buffer[1024];
+    GetModuleFileName(NULL, buffer, 1024);
+    std::wstring::size_type pos = std::wstring(buffer).find_last_of(L"\\/");
+
+    QString path = QString::fromStdWString(std::wstring(buffer).substr(0, pos)) + ICON_PATH;
+    return QIcon(path);
+}
+
+#endif // UTILS_H

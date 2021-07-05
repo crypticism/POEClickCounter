@@ -105,6 +105,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="POEClickCounter.qrc" />
+    <ClCompile Include="gui\SettingsForm.cpp" />
     <ClCompile Include="gui\StackedDisplayContainer.cpp" />
     <ClCompile Include="gui\SystemTrayIcon.cpp" />
     <ClCompile Include="io\data.cpp" />
@@ -112,13 +113,13 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="gui\SettingsForm.h" />
     <ClInclude Include="utils\utils.h" />
     <QtMoc Include="gui\SystemTrayIcon.h" />
     <QtMoc Include="gui\StackedDisplayContainer.h" />
     <ClInclude Include="io\ini.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="io\data.h" />
-    <ClInclude Include="io\input.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="utils\json.h" />
   </ItemGroup>
@@ -126,8 +127,12 @@
     <ResourceCompile Include="POEClickCounter.rc" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="gui\SettingsForm.ui" />
     <QtUic Include="gui\StackedDisplayContainer.ui" />
     <QtUic Include="gui\SystemTrayIcon.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\light_icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

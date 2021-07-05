@@ -3,16 +3,18 @@
 #include <Qt>
 #include <QtWidgets/QApplication>
 
+#include "gui/SettingsForm.h"
+#include "gui/StackedDisplayContainer.h"
 #include "gui/SystemTrayIcon.h"
-
-#include "StackedDisplayContainer.h"
 
 #include "io/data.h"
 #include "io/ini.h"
 
+#include "utils/utils.h"
+
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication application(argc, argv);
 
     Data::load_data();
     Data::reset_session_data();
@@ -36,7 +38,8 @@ int main(int argc, char *argv[])
     }
 
     SystemTrayIcon icon;
+    SettingsForm form;
 
-    return a.exec();
+    return application.exec();
 }
 

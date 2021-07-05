@@ -9,23 +9,21 @@
 #include "../io/ini.h"
 #include "../utils/utils.h"
 
-StackedDisplayContainer& StackedDisplayContainer::instance()
+StackedDisplayContainer &StackedDisplayContainer::instance()
 {
-	static StackedDisplayContainer _instance;
-	return _instance;
+    static StackedDisplayContainer _instance;
+    return _instance;
 }
 
 StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
-	: QWidget(parent),
-	ui(new Ui::StackedDisplayContainer)
+    : QWidget(parent),
+      ui(new Ui::StackedDisplayContainer)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 
     // Set ui state based on saved setting
-    json::JsonObject& settings = Data::get_settings();
-    never_show = settings.GetNamedBoolean(NEVER_SHOW_GUI);
-    display_index = int(settings.GetNamedNumber(DISPLAY_INDEX));
-    ui->WidgetContainer->setCurrentIndex(display_index);
+    json::JsonObject &settings = Data::get_settings();
+    ui->WidgetContainer->setCurrentIndex(int(settings.GetNamedNumber(DISPLAY_INDEX)));
 
     // Set up input listeners
     HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -40,7 +38,7 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     ui->m_click_value->setText(calculateLabel(Data::get_data_value(MIDDLE_CLICK)));
     ui->m_click_value_2->setText(calculateLabel(Data::get_data_value(MIDDLE_CLICK)));
     ui->mmb_session_value->setText(QString::fromStdString("0"));
-    
+
     ui->r_click_value->setText(calculateLabel(Data::get_data_value(RIGHT_CLICK)));
     ui->r_click_value_2->setText(calculateLabel(Data::get_data_value(RIGHT_CLICK)));
     ui->rmb_session_value->setText(QString::fromStdString("0"));
@@ -54,7 +52,7 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     ui->flask_session_value->setText(QString::fromStdString("0"));
 
     // Create timer that checks if window is open to show/hide GUI automatically
-    QTimer* timer = new QTimer(this);
+    QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&StackedDisplayContainer::checkIsApplicationActive));
     timer->start(3000);
 
@@ -82,7 +80,8 @@ BOOL CALLBACK StackedDisplayContainer::EnumWindowsProc(HWND hwnd, LPARAM lParam)
     LPWSTR title = reinterpret_cast<LPWSTR>(&buffer[0]);
     GetWindowText(hwnd, title, length);
 
-    if (IsWindow(hwnd) && title == application) {
+    if (IsWindow(hwnd) && title == application)
+    {
         emit instance().setApplicationActive();
         return TRUE;
     }
@@ -90,17 +89,20 @@ BOOL CALLBACK StackedDisplayContainer::EnumWindowsProc(HWND hwnd, LPARAM lParam)
     return TRUE;
 };
 
-LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, LPARAM lParam) {
-    if (nCode < 0) return CallNextHookEx(NULL, nCode, wParam, lParam);
+LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode < 0)
+        return CallNextHookEx(NULL, nCode, wParam, lParam);
 
-    if (nCode == HC_ACTION && (
-        wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP
-        )) {
+    if (nCode == HC_ACTION && (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP))
+    {
         // Ensure clicks are being ignored if not in the PoE window
         std::wstring title = get_active_window();
 
-        if (title == application) {
-            switch (wParam) {
+        if (title == application)
+        {
+            switch (wParam)
+            {
             case WM_LBUTTONUP:
             {
                 // This is probably an inefficient way to do this
@@ -108,21 +110,24 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
                 bool count_left_click_as_skill = settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE);
 
                 // Skills can be bound to mouse buttons, but POE uses the virtual keycodes for them
-                if (INI::is_skill_code(VK_LBUTTON) && count_left_click_as_skill) {
+                if (INI::is_skill_code(VK_LBUTTON) && count_left_click_as_skill)
+                {
                     emit instance().dispatchEvent(SKILL_USE);
                 }
                 emit instance().dispatchEvent(LEFT_CLICK);
                 break;
             }
             case WM_RBUTTONUP:
-                if (INI::is_skill_code(VK_RBUTTON)) {
+                if (INI::is_skill_code(VK_RBUTTON))
+                {
                     emit instance().dispatchEvent(SKILL_USE);
                 }
                 emit instance().dispatchEvent(RIGHT_CLICK);
                 break;
 
             case WM_MBUTTONUP:
-                if (INI::is_skill_code(VK_MBUTTON)) {
+                if (INI::is_skill_code(VK_MBUTTON))
+                {
                     emit instance().dispatchEvent(SKILL_USE);
                 }
                 emit instance().dispatchEvent(MIDDLE_CLICK);
@@ -134,21 +139,27 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
     return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
-LRESULT CALLBACK StackedDisplayContainer::keyboard_hook(int nCode, WPARAM wParam, LPARAM lParam) {
-    if (nCode < 0) return CallNextHookEx(NULL, nCode, wParam, lParam);
+LRESULT CALLBACK StackedDisplayContainer::keyboard_hook(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode < 0)
+        return CallNextHookEx(NULL, nCode, wParam, lParam);
 
-    if (nCode == HC_ACTION && wParam == WM_KEYUP) {
+    if (nCode == HC_ACTION && wParam == WM_KEYUP)
+    {
 
         // Ensure keypresses are being ignored if the PoE window is not active
         std::wstring title = get_active_window();
 
-        if (title == application) {
-            KBDLLHOOKSTRUCT* hook_info = (KBDLLHOOKSTRUCT*)lParam;
+        if (title == application)
+        {
+            KBDLLHOOKSTRUCT *hook_info = (KBDLLHOOKSTRUCT *)lParam;
             DWORD input = hook_info->vkCode;
-            if (INI::is_skill_code(input)) {
+            if (INI::is_skill_code(input))
+            {
                 emit instance().dispatchEvent(SKILL_USE);
             }
-            if (INI::is_flask_code(input)) {
+            if (INI::is_flask_code(input))
+            {
                 emit instance().dispatchEvent(FLASK_USE);
             }
         }
@@ -158,41 +169,47 @@ LRESULT CALLBACK StackedDisplayContainer::keyboard_hook(int nCode, WPARAM wParam
 }
 
 // Increments the UI and data store when an event is received
-void StackedDisplayContainer::handleUpdate(std::wstring event_type) {
+void StackedDisplayContainer::handleUpdate(std::wstring event_type)
+{
     double nValue = Data::get_data_value(event_type) + 1;
     double nSessionValue = Data::get_session_value(event_type) + 1;
-    
+
     Data::update_data(event_type, json::value(nValue));
     Data::update_session(event_type, json::value(nSessionValue));
 
     QString sValue = calculateLabel(nValue);
     QString sSessionValue = QString::fromStdString("+") + calculateLabel(nSessionValue);
 
-    if (event_type == LEFT_CLICK) {
+    if (event_type == LEFT_CLICK)
+    {
         ui->l_click_value->setText(sValue);
         ui->l_click_value_2->setText(sValue);
         ui->lmb_session_value->setText(sSessionValue);
         return;
     }
-    if (event_type == MIDDLE_CLICK) {
+    if (event_type == MIDDLE_CLICK)
+    {
         ui->m_click_value->setText(sValue);
         ui->m_click_value_2->setText(sValue);
         ui->mmb_session_value->setText(sSessionValue);
         return;
     }
-    if (event_type == RIGHT_CLICK) {
+    if (event_type == RIGHT_CLICK)
+    {
         ui->r_click_value->setText(sValue);
         ui->r_click_value_2->setText(sValue);
         ui->rmb_session_value->setText(sSessionValue);
         return;
     }
-    if (event_type == SKILL_USE) {
+    if (event_type == SKILL_USE)
+    {
         ui->skill_value->setText(sValue);
         ui->skill_value_2->setText(sValue);
         ui->skill_session_value->setText(sSessionValue);
         return;
     }
-    if (event_type == FLASK_USE) {
+    if (event_type == FLASK_USE)
+    {
         ui->flask_value->setText(sValue);
         ui->flask_value_2->setText(sValue);
         ui->flask_session_value->setText(sSessionValue);
@@ -201,61 +218,70 @@ void StackedDisplayContainer::handleUpdate(std::wstring event_type) {
 };
 
 // Check whether the application is open or not
-void StackedDisplayContainer::isApplicationActive() {
+void StackedDisplayContainer::isApplicationActive()
+{
     // Reset checking value to false, as we can only determine whether it is open
     // not whether it is not open
     is_checking_whether_application_active = false;
 
-    if (never_show) {
+    json::JsonObject settings = Data::get_settings();
+    if (settings.GetNamedBoolean(NEVER_SHOW_GUI))
+    {
+        this->hide();
         return;
     }
 
     EnumWindows(*EnumWindowsProc, NULL);
 
-    if (is_checking_whether_application_active) {
+    if (is_checking_whether_application_active)
+    {
         this->show();
     }
-    else {
+    else
+    {
         this->hide();
     }
 
     is_application_active = is_checking_whether_application_active;
 }
 
-void StackedDisplayContainer::setIsCheckingActive() {
+void StackedDisplayContainer::setIsCheckingActive()
+{
     is_checking_whether_application_active = true;
 }
 
-void StackedDisplayContainer::neverShow() {
-    never_show = !never_show;
+void StackedDisplayContainer::neverShow()
+{
+    json::JsonObject settings = Data::get_settings();
+    bool never_show = !settings.GetNamedBoolean(NEVER_SHOW_GUI);
 
-    if (never_show) {
+    Data::update_settings(NEVER_SHOW_GUI, json::value(never_show));
+
+    if (never_show)
+    {
         this->hide();
     }
 }
 
-void StackedDisplayContainer::toggleLock() {
+void StackedDisplayContainer::toggleLock()
+{
     movement_locked = !movement_locked;
 }
 
-void StackedDisplayContainer::toggleGUIMode() {
-    if (display_index) {
-        display_index = 0;
-    }
-    else {
-        display_index = 1;
-    }
+void StackedDisplayContainer::setGUIMode(int display_index)
+{
     ui->WidgetContainer->setCurrentIndex(display_index);
-    Data::update_settings(DISPLAY_INDEX, json::value(double(display_index)));
 }
 
-void StackedDisplayContainer::mousePressEvent(QMouseEvent* evt) {
+void StackedDisplayContainer::mousePressEvent(QMouseEvent *evt)
+{
     old_pos = evt->globalPos();
 }
 
-void StackedDisplayContainer::mouseMoveEvent(QMouseEvent* evt)
+void StackedDisplayContainer::mouseMoveEvent(QMouseEvent *evt)
 {
-    if (movement_locked) {
+    if (movement_locked)
+    {
         return;
     }
 
@@ -267,7 +293,8 @@ void StackedDisplayContainer::mouseMoveEvent(QMouseEvent* evt)
     Data::update_settings(GUI_Y_COORDINATE, json::value(this->y()));
 }
 
-void StackedDisplayContainer::resetSessionData() {
+void StackedDisplayContainer::resetSessionData()
+{
     Data::reset_session_data();
     ui->lmb_session_value->setText(QString::fromStdString("0"));
     ui->mmb_session_value->setText(QString::fromStdString("0"));

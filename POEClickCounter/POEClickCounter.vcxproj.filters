@@ -43,6 +43,9 @@
     <ClCompile Include="gui\StackedDisplayContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gui\SettingsForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="gui\SystemTrayIcon.h">
@@ -51,15 +54,15 @@
     <QtMoc Include="gui\StackedDisplayContainer.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="gui\SettingsForm.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\json.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="io\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="io\data.h">
@@ -87,5 +90,13 @@
     <QtUic Include="gui\StackedDisplayContainer.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="gui\SettingsForm.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\light_icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
