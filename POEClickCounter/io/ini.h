@@ -7,5 +7,6 @@ namespace INI {
 	bool is_detonate_code(int);
 
 	std::wstring find_skill_id(int, bool);
+	std::wstring find_flask_id(int);
 	bool is_keyboard_toggle_code(int);
 }

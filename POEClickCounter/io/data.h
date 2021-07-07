@@ -22,6 +22,13 @@ extern const inline std::wstring COUNT_LEFT_CLICK_AS_SKILL_USE = L"count_left_cl
 extern const inline std::wstring TRACK_DETONATE = L"track_detonate";
 
 extern const inline std::wstring SKILL_SPECIFIC_COUNTS = L"skill_specific_counts";
+extern const inline std::wstring FLASK_SPECIFIC_COUNTS = L"flask_specific_counts";
+
+extern const inline std::wstring FLASK_1 = L"flask_1";
+extern const inline std::wstring FLASK_2 = L"flask_2";
+extern const inline std::wstring FLASK_3 = L"flask_3";
+extern const inline std::wstring FLASK_4 = L"flask_4";
+extern const inline std::wstring FLASK_5 = L"flask_5";
 
 extern const inline std::wstring SKILL_1 = L"skill_1";
 extern const inline std::wstring SKILL_2 = L"skill_2";
@@ -47,6 +54,7 @@ namespace Data {
 	
 	double get_data_value(std::wstring);
 	double get_session_value(std::wstring);
+	double get_data_specific_flask_value(std::wstring);
 	double get_data_specific_skill_value(std::wstring);
 
 	void load_data();
@@ -55,6 +63,7 @@ namespace Data {
 	void update_data(std::wstring, json::JsonValue);
 	void update_settings(std::wstring, json::JsonValue);
 	void update_session(std::wstring, json::JsonValue);
+	void update_data_specific_flask_value(std::wstring, json::JsonValue);
 	void update_data_specific_skill_value(std::wstring, json::JsonValue);
 
 	void set_count_visibility(std::wstring, json::JsonValue);

@@ -219,7 +219,7 @@ LRESULT CALLBACK StackedDisplayContainer::keyboard_hook(int nCode, WPARAM wParam
             }
             if (INI::is_flask_code(input))
             {
-                emit instance().dispatchEvent(FLASK_USE);
+                emit instance().dispatchEvent(FLASK_USE, INI::find_flask_id(input));
             }
             if (INI::is_detonate_code(input) && settings.GetNamedBoolean(TRACK_DETONATE))
             {
@@ -280,6 +280,10 @@ void StackedDisplayContainer::handleUpdate(std::wstring event_type, std::wstring
         ui->flask_value->setText(sValue);
         ui->flask_value_2->setText(sValue);
         ui->flask_session_value->setText(sSessionValue);
+
+        int n_flaskCount = Data::get_data_specific_flask_value(skill_id);
+        Data::update_data_specific_flask_value(skill_id, json::value(n_flaskCount + 1));
+
         return;
     }
     if (event_type == DETONATE) {

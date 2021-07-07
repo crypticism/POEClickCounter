@@ -60,7 +60,15 @@ namespace Data
 		skill_specific_counts.SetNamedValue(SKILL_12, json::value(0));
 		skill_specific_counts.SetNamedValue(SKILL_13, json::value(0));
 
+		json::JsonObject flask_specific_counts;
+		flask_specific_counts.SetNamedValue(FLASK_1, json::value(0));
+		flask_specific_counts.SetNamedValue(FLASK_2, json::value(0));
+		flask_specific_counts.SetNamedValue(FLASK_3, json::value(0));
+		flask_specific_counts.SetNamedValue(FLASK_4, json::value(0));
+		flask_specific_counts.SetNamedValue(FLASK_5, json::value(0));
+
 		session.SetNamedValue(SKILL_SPECIFIC_COUNTS, json::value(skill_specific_counts));
+		session.SetNamedValue(FLASK_SPECIFIC_COUNTS, json::value(flask_specific_counts));
 	}
 
 	// Load data if present otherwise initialize all values to 0
@@ -95,7 +103,15 @@ namespace Data
 			skill_specific_counts.SetNamedValue(SKILL_12, json::value(0));
 			skill_specific_counts.SetNamedValue(SKILL_13, json::value(0));
 
+			json::JsonObject flask_specific_counts;
+			flask_specific_counts.SetNamedValue(FLASK_1, json::value(0));
+			flask_specific_counts.SetNamedValue(FLASK_2, json::value(0));
+			flask_specific_counts.SetNamedValue(FLASK_3, json::value(0));
+			flask_specific_counts.SetNamedValue(FLASK_4, json::value(0));
+			flask_specific_counts.SetNamedValue(FLASK_5, json::value(0));
+
 			update_data(SKILL_SPECIFIC_COUNTS, json::value(skill_specific_counts));
+			update_data(FLASK_SPECIFIC_COUNTS, json::value(flask_specific_counts));
 			save_data();
 		}
 	}
@@ -154,6 +170,10 @@ namespace Data
 		return data.GetNamedObject(SKILL_SPECIFIC_COUNTS).GetNamedNumber(skill_id);
 	}
 
+	double get_data_specific_flask_value(std::wstring flask_id) {
+		return data.GetNamedObject(FLASK_SPECIFIC_COUNTS).GetNamedNumber(flask_id);
+	}
+
 	double get_session_value(std::wstring field) {
 		return session.GetNamedNumber(field);
 	}
@@ -172,6 +192,10 @@ namespace Data
 
 	void update_data_specific_skill_value(std::wstring skill_id, json::JsonValue value) {
 		data.GetNamedObject(SKILL_SPECIFIC_COUNTS).SetNamedValue(skill_id, value);
+	}
+
+	void update_data_specific_flask_value(std::wstring flask_id, json::JsonValue value) {
+		data.GetNamedObject(FLASK_SPECIFIC_COUNTS).SetNamedValue(flask_id, value);
 	}
 
 	void set_count_visibility(std::wstring field, json::JsonValue value) {
