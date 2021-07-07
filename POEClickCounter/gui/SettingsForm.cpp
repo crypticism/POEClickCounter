@@ -28,6 +28,7 @@ SettingsForm::SettingsForm(QWidget *parent)
 	ui->display_index->setChecked(!bool(int(settings.GetNamedNumber(DISPLAY_INDEX))));
 	ui->never_show->setChecked(settings.GetNamedBoolean(NEVER_SHOW_GUI));
 	ui->count_left_click_as_skill->setChecked(settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE));
+	ui->track_detonate->setChecked(settings.GetNamedBoolean(TRACK_DETONATE));
 
 	// Initialize active fields
 	ui->left_click_visibility->setChecked(Data::is_count_visible(LEFT_CLICK));
@@ -35,6 +36,7 @@ SettingsForm::SettingsForm(QWidget *parent)
 	ui->right_click_visibility->setChecked(Data::is_count_visible(RIGHT_CLICK));
 	ui->skill_use_visibility->setChecked(Data::is_count_visible(SKILL_USE));
 	ui->flask_use_visibility->setChecked(Data::is_count_visible(FLASK_USE));
+	ui->detonate_visibility->setChecked(Data::is_count_visible(DETONATE));
 
 	// Connect fields to tracker display
 	connect(ui->left_click_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setLeftClickVisibility);
@@ -42,10 +44,12 @@ SettingsForm::SettingsForm(QWidget *parent)
 	connect(ui->right_click_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setRightClickVisibility);
 	connect(ui->skill_use_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setSkillUseVisibility);
 	connect(ui->flask_use_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setFlaskUseVisibility);
+	connect(ui->detonate_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setDetonateVisibility);
 	
 	connect(ui->display_index, &QCheckBox::stateChanged, this, &SettingsForm::displayIndexStateChanged);
 	connect(ui->never_show, &QCheckBox::stateChanged, this, &SettingsForm::neverShowStateChanged);
 	connect(ui->count_left_click_as_skill, &QCheckBox::stateChanged, this, &SettingsForm::countLeftClickStateChanged);
+	connect(ui->track_detonate, &QCheckBox::stateChanged, this, &SettingsForm::trackDetonateStateChanged);
 
 	connect(ui->movement_locked, &QPushButton::pressed, &StackedDisplayContainer::instance(), &StackedDisplayContainer::toggleLock);
 	connect(ui->movement_locked, &QPushButton::pressed, this, &SettingsForm::toggleLocked);
@@ -68,6 +72,10 @@ void SettingsForm::neverShowStateChanged(int state) {
 
 void SettingsForm::countLeftClickStateChanged() {
 	Data::update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(ui->count_left_click_as_skill->isChecked()));
+}
+
+void SettingsForm::trackDetonateStateChanged() {
+	Data::update_settings(TRACK_DETONATE, json::value(ui->track_detonate->isChecked()));
 }
 
 void SettingsForm::toggleLocked() {

@@ -53,12 +53,17 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     ui->flask_value_2->setText(calculateLabel(Data::get_data_value(FLASK_USE)));
     ui->flask_session_value->setText(QString::fromStdString("0"));
 
+    ui->detonate_value->setText(calculateLabel(Data::get_data_value(DETONATE)));
+    ui->detonate_value_2->setText(calculateLabel(Data::get_data_value(DETONATE)));
+    ui->detonate_session_value->setText(QString::fromStdString("0"));
+
     // Set container visibilities
     setLeftClickVisibility(int(Data::is_count_visible(LEFT_CLICK)));
     setMiddleClickVisibility(int(Data::is_count_visible(MIDDLE_CLICK)));
     setRightClickVisibility(int(Data::is_count_visible(RIGHT_CLICK)));
     setSkillUseVisibility(int(Data::is_count_visible(SKILL_USE)));
     setFlaskUseVisibility(int(Data::is_count_visible(FLASK_USE)));
+    setDetonateVisibility(int(Data::is_count_visible(DETONATE)));
 
     // Create timer that checks if window is open to show/hide GUI automatically
     QTimer *timer = new QTimer(this);
@@ -103,13 +108,15 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
     if (nCode < 0)
         return CallNextHookEx(NULL, nCode, wParam, lParam);
 
-    if (nCode == HC_ACTION && (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP))
+    if (nCode == HC_ACTION && wParam != WM_MOUSEMOVE)
     {
         // Ensure clicks are being ignored if not in the PoE window
         std::wstring title = get_active_window();
 
         if (title == application)
         {
+            bool b_isToggled = StackedDisplayContainer::instance().is_skill_bar_toggled;
+            
             switch (wParam)
             {
             case WM_LBUTTONUP:
@@ -121,7 +128,7 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
                 // Skills can be bound to mouse buttons, but POE uses the virtual keycodes for them
                 if (INI::is_skill_code(VK_LBUTTON) && count_left_click_as_skill)
                 {
-                    emit instance().dispatchEvent(SKILL_USE);
+                    emit instance().dispatchEvent(SKILL_USE, INI::find_skill_id(VK_LBUTTON, b_isToggled));
                 }
                 emit instance().dispatchEvent(LEFT_CLICK);
                 break;
@@ -129,7 +136,7 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
             case WM_RBUTTONUP:
                 if (INI::is_skill_code(VK_RBUTTON))
                 {
-                    emit instance().dispatchEvent(SKILL_USE);
+                    emit instance().dispatchEvent(SKILL_USE, INI::find_skill_id(VK_RBUTTON, b_isToggled));
                 }
                 emit instance().dispatchEvent(RIGHT_CLICK);
                 break;
@@ -137,9 +144,38 @@ LRESULT CALLBACK StackedDisplayContainer::mouse_hook(int nCode, WPARAM wParam, L
             case WM_MBUTTONUP:
                 if (INI::is_skill_code(VK_MBUTTON))
                 {
-                    emit instance().dispatchEvent(SKILL_USE);
+                    emit instance().dispatchEvent(SKILL_USE, INI::find_skill_id(VK_MBUTTON, b_isToggled));
                 }
                 emit instance().dispatchEvent(MIDDLE_CLICK);
+                break;
+            case WM_XBUTTONUP:
+                MSLLHOOKSTRUCT* hook_info = (MSLLHOOKSTRUCT*)lParam;
+                DWORD input = hook_info->mouseData;
+
+                // mouseData stores the actual input in a high-order/low-order pair
+                // shifting bits allows us to grab the actual value
+                auto word = input >> 16;
+
+                json::JsonObject settings = Data::get_settings();
+
+                // XBUTTON1 and XBUTTON2 map to 1 and 2 respectively, this means we need to use VK_XBUTTON1 and VK_XBUTTON2
+                // as those are the actual values used in the config file
+                if (word == XBUTTON1) {
+                    if (INI::is_skill_code(VK_XBUTTON1, b_isToggled)) {
+                        emit instance().dispatchEvent(SKILL_USE, INI::find_skill_id(VK_XBUTTON1, b_isToggled));
+                    }
+                    else if (INI::is_detonate_code(VK_XBUTTON1) && settings.GetNamedBoolean(TRACK_DETONATE)) {
+                        emit instance().dispatchEvent(DETONATE);
+                    }
+                }
+                else if (word == XBUTTON2) {
+                    if (INI::is_skill_code(VK_XBUTTON2, b_isToggled)) {
+                        emit instance().dispatchEvent(SKILL_USE, INI::find_skill_id(VK_XBUTTON2, b_isToggled));
+                    }
+                    else if (INI::is_detonate_code(VK_XBUTTON2) && settings.GetNamedBoolean(TRACK_DETONATE)) {
+                        emit instance().dispatchEvent(DETONATE);
+                    }
+                }
                 break;
             }
         }
@@ -153,23 +189,41 @@ LRESULT CALLBACK StackedDisplayContainer::keyboard_hook(int nCode, WPARAM wParam
     if (nCode < 0)
         return CallNextHookEx(NULL, nCode, wParam, lParam);
 
-    if (nCode == HC_ACTION && wParam == WM_KEYUP)
+    KBDLLHOOKSTRUCT* hook_info = (KBDLLHOOKSTRUCT*)lParam;
+    DWORD input = hook_info->vkCode;
+
+    // These two checks are not localized to the application window, as Path of Exile also doesn't
+    // restrict skill bar toggling to inputs over the Path of Exile window
+    if (nCode == HC_ACTION && wParam == WM_KEYDOWN && INI::is_keyboard_toggle_code(input)) {
+        StackedDisplayContainer::instance().is_skill_bar_toggled = true;
+    }
+
+    if (nCode == HC_ACTION && wParam == WM_KEYUP && INI::is_keyboard_toggle_code(input)) {
+        StackedDisplayContainer::instance().is_skill_bar_toggled = false;
+    }
+
+    if (nCode == HC_ACTION && wParam == WM_KEYDOWN)
     {
 
         // Ensure keypresses are being ignored if the PoE window is not active
         std::wstring title = get_active_window();
 
+        json::JsonObject settings = Data::get_settings();
+
         if (title == application)
         {
-            KBDLLHOOKSTRUCT *hook_info = (KBDLLHOOKSTRUCT *)lParam;
-            DWORD input = hook_info->vkCode;
-            if (INI::is_skill_code(input))
+            bool b_isToggled = StackedDisplayContainer::instance().is_skill_bar_toggled;
+            if (INI::is_skill_code(input, b_isToggled))
             {
-                emit instance().dispatchEvent(SKILL_USE);
+                emit instance().dispatchEvent(SKILL_USE, INI::find_skill_id(input, b_isToggled));
             }
             if (INI::is_flask_code(input))
             {
                 emit instance().dispatchEvent(FLASK_USE);
+            }
+            if (INI::is_detonate_code(input) && settings.GetNamedBoolean(TRACK_DETONATE))
+            {
+                emit instance().dispatchEvent(DETONATE);
             }
         }
     }
@@ -178,7 +232,7 @@ LRESULT CALLBACK StackedDisplayContainer::keyboard_hook(int nCode, WPARAM wParam
 }
 
 // Increments the UI and data store when an event is received
-void StackedDisplayContainer::handleUpdate(std::wstring event_type)
+void StackedDisplayContainer::handleUpdate(std::wstring event_type, std::wstring skill_id)
 {
     double nValue = Data::get_data_value(event_type) + 1;
     double nSessionValue = Data::get_session_value(event_type) + 1;
@@ -215,6 +269,10 @@ void StackedDisplayContainer::handleUpdate(std::wstring event_type)
         ui->skill_value->setText(sValue);
         ui->skill_value_2->setText(sValue);
         ui->skill_session_value->setText(sSessionValue);
+
+        int n_skillCount = Data::get_data_specific_skill_value(skill_id);
+        Data::update_data_specific_skill_value(skill_id, json::value(n_skillCount + 1));
+
         return;
     }
     if (event_type == FLASK_USE)
@@ -223,6 +281,11 @@ void StackedDisplayContainer::handleUpdate(std::wstring event_type)
         ui->flask_value_2->setText(sValue);
         ui->flask_session_value->setText(sSessionValue);
         return;
+    }
+    if (event_type == DETONATE) {
+        ui->detonate_value->setText(sValue);
+        ui->detonate_value_2->setText(sValue);
+        ui->detonate_session_value->setText(sSessionValue);
     }
 };
 
@@ -316,6 +379,16 @@ void StackedDisplayContainer::setFlaskUseVisibility(int state) {
     updateWidth();
 }
 
+void StackedDisplayContainer::setDetonateVisibility(int state) {
+    bool active(state);
+    Data::set_count_visibility(DETONATE, json::value(active));
+
+    ui->DetonateContainer->setVisible(active);
+    ui->DetonateContainer_2->setVisible(active);
+
+    updateWidth();
+}
+
 void StackedDisplayContainer::updateWidth() {
     int n_visibleCounts = get_number_visible_counts();
     
@@ -358,4 +431,5 @@ void StackedDisplayContainer::resetSessionData()
     ui->rmb_session_value->setText(QString::fromStdString("0"));
     ui->skill_session_value->setText(QString::fromStdString("0"));
     ui->flask_session_value->setText(QString::fromStdString("0"));
+    ui->detonate_session_value->setText(QString::fromStdString("0"));
 }

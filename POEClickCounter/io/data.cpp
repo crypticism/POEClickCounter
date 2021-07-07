@@ -38,11 +38,29 @@ namespace Data
 	}
 
 	void reset_session_data() {
-		session.SetNamedValue(LEFT_CLICK, json::value(0.0));
-		session.SetNamedValue(MIDDLE_CLICK, json::value(0.0));
-		session.SetNamedValue(RIGHT_CLICK, json::value(0.0));
-		session.SetNamedValue(SKILL_USE, json::value(0.0));
-		session.SetNamedValue(FLASK_USE, json::value(0.0));
+		session.SetNamedValue(LEFT_CLICK, json::value(0));
+		session.SetNamedValue(MIDDLE_CLICK, json::value(0));
+		session.SetNamedValue(RIGHT_CLICK, json::value(0));
+		session.SetNamedValue(SKILL_USE, json::value(0));
+		session.SetNamedValue(FLASK_USE, json::value(0));
+		session.SetNamedValue(DETONATE, json::value(0));
+
+		json::JsonObject skill_specific_counts;
+		skill_specific_counts.SetNamedValue(SKILL_1, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_2, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_3, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_4, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_5, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_6, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_7, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_8, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_9, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_10, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_11, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_12, json::value(0));
+		skill_specific_counts.SetNamedValue(SKILL_13, json::value(0));
+
+		session.SetNamedValue(SKILL_SPECIFIC_COUNTS, json::value(skill_specific_counts));
 	}
 
 	// Load data if present otherwise initialize all values to 0
@@ -60,6 +78,24 @@ namespace Data
 			update_data(RIGHT_CLICK, json::value(0));
 			update_data(SKILL_USE, json::value(0));
 			update_data(FLASK_USE, json::value(0));
+			update_data(DETONATE, json::value(0));
+
+			json::JsonObject skill_specific_counts;
+			skill_specific_counts.SetNamedValue(SKILL_1, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_2, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_3, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_4, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_5, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_6, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_7, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_8, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_9, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_10, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_11, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_12, json::value(0));
+			skill_specific_counts.SetNamedValue(SKILL_13, json::value(0));
+
+			update_data(SKILL_SPECIFIC_COUNTS, json::value(skill_specific_counts));
 			save_data();
 		}
 	}
@@ -79,6 +115,7 @@ namespace Data
 			update_settings(DISPLAY_INDEX, json::value(0));
 			update_settings(NEVER_SHOW_GUI, json::value(false));
 			update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(false));
+			update_settings(TRACK_DETONATE, json::value(false));
 
 			// Initialize visibility values
 			json::JsonObject visible_counts;
@@ -87,6 +124,7 @@ namespace Data
 			visible_counts.SetNamedValue(RIGHT_CLICK, json::value(true));
 			visible_counts.SetNamedValue(SKILL_USE, json::value(true));
 			visible_counts.SetNamedValue(FLASK_USE, json::value(true));
+			visible_counts.SetNamedValue(DETONATE, json::value(false));
 
 			update_settings(VISIBLE_COUNTS, json::value(visible_counts));
 			save_settings();
@@ -112,6 +150,10 @@ namespace Data
 		return data.GetNamedNumber(field);
 	}
 
+	double get_data_specific_skill_value(std::wstring skill_id) {
+		return data.GetNamedObject(SKILL_SPECIFIC_COUNTS).GetNamedNumber(skill_id);
+	}
+
 	double get_session_value(std::wstring field) {
 		return session.GetNamedNumber(field);
 	}
@@ -126,6 +168,10 @@ namespace Data
 
 	void update_session(std::wstring field, json::JsonValue value) {
 		session.SetNamedValue(field, value);
+	}
+
+	void update_data_specific_skill_value(std::wstring skill_id, json::JsonValue value) {
+		data.GetNamedObject(SKILL_SPECIFIC_COUNTS).SetNamedValue(skill_id, value);
 	}
 
 	void set_count_visibility(std::wstring field, json::JsonValue value) {

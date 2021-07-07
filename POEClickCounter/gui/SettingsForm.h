@@ -23,6 +23,8 @@ private slots:
 	void neverShowStateChanged(int);
 	void countLeftClickStateChanged();
 	void displayIndexStateChanged();
+	void trackDetonateStateChanged();
+
 	void toggleLocked();
 	void saveSettings();
 

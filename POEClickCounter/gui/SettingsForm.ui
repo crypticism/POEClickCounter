@@ -46,22 +46,9 @@
        </widget>
       </item>
       <item>
-       <spacer name="spacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="movement_locked">
+       <widget class="QCheckBox" name="track_detonate">
         <property name="text">
-         <string>Unlock Tracker</string>
+         <string>Track Detonate Use</string>
         </property>
        </widget>
       </item>
@@ -99,7 +86,7 @@
       <item>
        <widget class="QCheckBox" name="count_left_click_as_skill">
         <property name="text">
-         <string>Count Left Click as a Skill Use</string>
+         <string>Count Left Click as Skill</string>
         </property>
        </widget>
       </item>
@@ -273,6 +260,13 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QCheckBox" name="detonate_visibility">
+              <property name="text">
+               <string>Detonate</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -303,6 +297,13 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QPushButton" name="movement_locked">
+        <property name="text">
+         <string>Unlock Tracker</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <spacer name="spacer">
         <property name="orientation">

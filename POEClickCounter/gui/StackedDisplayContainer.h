@@ -33,7 +33,7 @@ public:
 	void setGUIMode(int);
 
 public slots:
-	void handleUpdate(std::wstring);
+	void handleUpdate(std::wstring, std::wstring);
 	void isApplicationActive();
 	void setIsCheckingActive();
 	void resetSessionData();
@@ -44,13 +44,15 @@ public slots:
 	void setRightClickVisibility(int);
 	void setSkillUseVisibility(int);
 	void setFlaskUseVisibility(int);
+	void setDetonateVisibility(int);
 
 protected:
 	void mousePressEvent(QMouseEvent*);
 	void mouseMoveEvent(QMouseEvent*);
 
 signals:
-	void dispatchEvent(std::wstring);
+	// arg1 = event type, arg2 = skill_id if applicable
+	void dispatchEvent(std::wstring, std::wstring = L"");
 	void checkIsApplicationActive();
 	void setApplicationActive();
 
@@ -60,6 +62,8 @@ private:
 	void updateWidth();
 
 	int container_width;
+
+	bool is_skill_bar_toggled = false;
 
 	bool is_checking_whether_application_active = false;
 	bool is_application_active = false;

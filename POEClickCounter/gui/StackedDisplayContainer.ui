@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>456</width>
+    <width>546</width>
     <height>32</height>
    </rect>
   </property>
@@ -21,7 +21,8 @@ QLabel {color: #f5f589; font: 11pt &quot;Fontin&quot;; }
 #skill_session_value,
 #rmb_session_value,
 #mmb_session_value,
-#lmb_session_value {
+#lmb_session_value,
+#detonate_session_value {
 	color: #37de28;
 	font-size: 9pt;
 } </string>
@@ -81,10 +82,7 @@ QLabel {color: #f5f589; font: 11pt &quot;Fontin&quot;; }
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <property name="spacing">
-           <number>6</number>
-          </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -1015,6 +1013,87 @@ QLabel {color: #f5f589; font: 11pt &quot;Fontin&quot;; }
             </layout>
            </widget>
           </item>
+          <item>
+           <widget class="QFrame" name="DetonateContainer">
+            <layout class="QVBoxLayout" name="SkillContainer_5">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QHBoxLayout" name="detonate_layout">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="sizeConstraint">
+                <enum>QLayout::SetMaximumSize</enum>
+               </property>
+               <item>
+                <widget class="QLabel" name="detonate_label">
+                 <property name="font">
+                  <font>
+                   <pointsize>11</pointsize>
+                   <italic>false</italic>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Deto: </string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="detonate_value">
+                 <property name="font">
+                  <font>
+                   <pointsize>11</pointsize>
+                   <italic>false</italic>
+                   <bold>false</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>999B</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="detonate_session_value">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>10</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>+999B</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1049,10 +1128,7 @@ QLabel {color: #f5f589 !important; }</string>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_6">
-          <property name="spacing">
-           <number>6</number>
-          </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -1843,6 +1919,64 @@ QLabel {color: #f5f589 !important; }</string>
              </item>
              <item>
               <widget class="QLabel" name="flask_value_2">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                 <italic>false</italic>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>999B</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="DetonateContainer_2">
+            <layout class="QHBoxLayout" name="flask_layout_3">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetMaximumSize</enum>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="detonate_label_2">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                 <italic>false</italic>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Flask: </string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="detonate_value_2">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
