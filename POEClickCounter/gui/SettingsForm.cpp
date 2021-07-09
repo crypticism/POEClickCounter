@@ -2,8 +2,7 @@
 
 #include <QCloseEvent>
 
-#include "../io/data.h"
-#include "../utils/utils.h"
+#include "Manager.h"
 #include "StackedDisplayContainer.h"
 #include "SettingsForm.h"
 #include "ui_SettingsForm.h"
@@ -50,9 +49,7 @@ SettingsForm::SettingsForm(QWidget *parent)
 	connect(ui->never_show, &QCheckBox::stateChanged, this, &SettingsForm::neverShowStateChanged);
 	connect(ui->count_left_click_as_skill, &QCheckBox::stateChanged, this, &SettingsForm::countLeftClickStateChanged);
 	connect(ui->track_detonate, &QCheckBox::stateChanged, this, &SettingsForm::trackDetonateStateChanged);
-
-	connect(ui->movement_locked, &QPushButton::pressed, &StackedDisplayContainer::instance(), &StackedDisplayContainer::toggleLock);
-	connect(ui->movement_locked, &QPushButton::pressed, this, &SettingsForm::toggleLocked);
+	connect(ui->movement_locked, &QCheckBox::stateChanged, &Manager::instance(), &Manager::set_movement_lock);
 
 	connect(ui->save_button, &QPushButton::pressed, this, &SettingsForm::saveSettings);
 }

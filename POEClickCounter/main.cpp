@@ -21,11 +21,6 @@ int main(int argc, char *argv[])
     Data::load_settings();
     INI::load_ini();
 
-    // Connect signals for the stacked display container
-    QWidget::connect(&StackedDisplayContainer::instance(), &StackedDisplayContainer::dispatchEvent, &StackedDisplayContainer::handleUpdate);
-    QWidget::connect(&StackedDisplayContainer::instance(), &StackedDisplayContainer::checkIsApplicationActive, &StackedDisplayContainer::isApplicationActive);
-    QWidget::connect(&StackedDisplayContainer::instance(), &StackedDisplayContainer::setApplicationActive, &StackedDisplayContainer::setIsCheckingActive);
-
     // Window settings to make the window bordless, always on top and have no taskbar thing
     StackedDisplayContainer::instance().setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
     // Window setting to allow the background to be transparent

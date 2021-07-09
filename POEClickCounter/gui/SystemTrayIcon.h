@@ -14,8 +14,6 @@
 
 #include "ui_SystemTrayIcon.h"
 
-
-
 const QString SETTINGS_STRING = QString::fromStdString("Settings");
 
 const QString REFRESH_KEYBINDS_STRING = QString::fromStdString("Refresh Keybinds");
@@ -30,11 +28,6 @@ class SystemTrayIcon : public QDialog
 public:
 	SystemTrayIcon();
 	~SystemTrayIcon();
-
-	void setVisible(bool) override;
-
-public slots:
-	void refreshKeybinds();
 
 private:
 	void createActions();

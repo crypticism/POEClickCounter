@@ -126,8 +126,8 @@ namespace Data
 		}
 		else {
 			settings = json::JsonObject{};
-			update_settings(GUI_X_COORDINATE, json::value(500));
-			update_settings(GUI_Y_COORDINATE, json::value(500));
+			update_settings(TRACKER_X_COORDINATE, json::value(500));
+			update_settings(TRACKER_Y_COORDINATE, json::value(500));
 			update_settings(DISPLAY_INDEX, json::value(0));
 			update_settings(NEVER_SHOW_GUI, json::value(false));
 			update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(false));

@@ -79,7 +79,7 @@
       <item>
        <widget class="QCheckBox" name="never_show">
         <property name="text">
-         <string>Never Show Tracker</string>
+         <string>Never Show Interface</string>
         </property>
        </widget>
       </item>
@@ -286,7 +286,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="leftMargin">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="topMargin">
        <number>0</number>
@@ -298,9 +298,12 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="movement_locked">
+       <widget class="QCheckBox" name="movement_locked">
         <property name="text">
-         <string>Unlock Tracker</string>
+         <string>Interface Locked</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
