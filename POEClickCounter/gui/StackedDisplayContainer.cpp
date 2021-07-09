@@ -18,6 +18,11 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
 
     this->container_width = ui->LMBContainer->width();
 
+    // Window settings to make the window bordless, always on top and have no taskbar thing
+    this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
+    // Window setting to allow the background to be transparent
+    this->setAttribute(Qt::WA_TranslucentBackground);
+
     // Connect to global events
     connect(&Manager::instance(), &Manager::input_event, this, &StackedDisplayContainer::handle_input_event);
     connect(&Manager::instance(), &Manager::reset_session_data, this, &StackedDisplayContainer::reset_session_data);
@@ -125,7 +130,7 @@ void StackedDisplayContainer::handle_input_event(std::wstring event_type, int id
         ui->flask_value_2->setText(sValue);
         ui->flask_session_value->setText(sSessionValue);
 
-        std::wstring flask_id = INI::find_skill_id(id, toggled);
+        std::wstring flask_id = INI::find_flask_id(id);
 
         int n_flaskCount = Data::get_data_specific_flask_value(flask_id);
         Data::update_data_specific_flask_value(flask_id, json::value(n_flaskCount + 1));

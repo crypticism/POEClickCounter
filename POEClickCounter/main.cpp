@@ -3,6 +3,7 @@
 #include <Qt>
 #include <QtWidgets/QApplication>
 
+#include "gui/APM.h"
 #include "gui/SettingsForm.h"
 #include "gui/StackedDisplayContainer.h"
 #include "gui/SystemTrayIcon.h"
@@ -21,17 +22,13 @@ int main(int argc, char *argv[])
     Data::load_settings();
     INI::load_ini();
 
-    // Window settings to make the window bordless, always on top and have no taskbar thing
-    StackedDisplayContainer::instance().setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
-    // Window setting to allow the background to be transparent
-    StackedDisplayContainer::instance().setAttribute(Qt::WA_TranslucentBackground);
-
     // Show the window by default if user has not set it to never show
     json::JsonObject settings = Data::get_settings();
     if (!settings.GetNamedBoolean(NEVER_SHOW_GUI)) {
         StackedDisplayContainer::instance().show();
     }
 
+    APM apm;
     SystemTrayIcon icon;
     SettingsForm form;
 

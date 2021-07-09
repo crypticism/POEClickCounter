@@ -88,6 +88,7 @@ void SettingsForm::toggleLocked() {
 
 void SettingsForm::saveSettings() {
 	Data::save_settings();
+	Manager::instance().set_movement_lock(1);
 	this->hide();
 }
 
@@ -97,6 +98,7 @@ void SettingsForm::showSettings() {
 
 void SettingsForm::closeEvent(QCloseEvent* event) {
 	event->ignore();
+	Manager::instance().set_movement_lock(1);
 	this->hide();
 }
 

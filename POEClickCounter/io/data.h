@@ -16,10 +16,13 @@ extern const inline std::wstring VISIBLE_COUNTS = L"visible_counts";
 
 extern const inline std::wstring NEVER_SHOW_GUI = L"never_show";
 extern const inline std::wstring DISPLAY_INDEX = L"display_index";
-extern const inline std::wstring TRACKER_X_COORDINATE = L"tracker_x_pos";
-extern const inline std::wstring TRACKER_Y_COORDINATE = L"tracker_y_pos";
 extern const inline std::wstring COUNT_LEFT_CLICK_AS_SKILL_USE = L"count_left_click_as_skill";
 extern const inline std::wstring TRACK_DETONATE = L"track_detonate";
+
+extern const inline std::wstring TRACKER_X_COORDINATE = L"tracker_x_pos";
+extern const inline std::wstring TRACKER_Y_COORDINATE = L"tracker_y_pos";
+extern const inline std::wstring APM_X_COORDINATE = L"apm_x_pos";
+extern const inline std::wstring APM_Y_COORDINATE = L"apm_y_pos";
 
 extern const inline std::wstring SKILL_SPECIFIC_COUNTS = L"skill_specific_counts";
 extern const inline std::wstring FLASK_SPECIFIC_COUNTS = L"flask_specific_counts";

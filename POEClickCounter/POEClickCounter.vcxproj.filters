@@ -49,6 +49,9 @@
     <ClCompile Include="gui\Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="gui\APM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="gui\SystemTrayIcon.h">
@@ -61,6 +64,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="gui\Manager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="gui\APM.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -100,6 +106,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="gui\Manager.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="gui\APM.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

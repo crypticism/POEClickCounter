@@ -3,8 +3,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#define NOMINMAX
+
 #include "../pch.h"
-#include "../io/data.h"
 
 #include <QString>
 #include <QIcon>
