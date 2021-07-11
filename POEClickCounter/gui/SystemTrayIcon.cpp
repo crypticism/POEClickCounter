@@ -25,7 +25,7 @@ SystemTrayIcon::~SystemTrayIcon()
 void SystemTrayIcon::createActions()
 {
     openSettingsAction = new QAction(SETTINGS_STRING, this);
-    connect(openSettingsAction, &QAction::triggered, &SettingsForm::instance(), &SettingsForm::showSettings);
+    connect(openSettingsAction, &QAction::triggered, &Manager::instance(), &Manager::set_settings_visible);
 
     resetSessionDataAction = new QAction(RESET_SESSION_STRING, this);
     connect(resetSessionDataAction, &QAction::triggered, &Manager::instance(), &Manager::reset_session);

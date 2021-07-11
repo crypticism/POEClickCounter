@@ -4,12 +4,6 @@
 #include "StackedDisplayContainer.h"
 #include "Manager.h"
 
-StackedDisplayContainer &StackedDisplayContainer::instance()
-{
-    static StackedDisplayContainer _instance;
-    return _instance;
-}
-
 StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     : QWidget(parent),
       ui(new Ui::StackedDisplayContainer)
@@ -18,11 +12,10 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
 
     this->container_width = ui->LMBContainer->width();
 
-    // Connect to global events
-    connect(&Manager::instance(), &Manager::input_event, this, &StackedDisplayContainer::handle_input_event);
-    connect(&Manager::instance(), &Manager::reset_session_data, this, &StackedDisplayContainer::reset_session_data);
-    connect(&Manager::instance(), &Manager::movement_lock_change, this, &StackedDisplayContainer::set_movement_locked);
-    connect(&Manager::instance(), &Manager::window_visibility, this, &StackedDisplayContainer::set_visibility);
+    // Window settings to make the window bordless, always on top and have no taskbar thing
+    this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
+    // Window setting to allow the background to be transparent
+    this->setAttribute(Qt::WA_TranslucentBackground);
 
     // Set ui state based on saved setting
     json::JsonObject &settings = Data::get_settings();
@@ -54,12 +47,12 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     ui->detonate_session_value->setText(QString::fromStdString("0"));
 
     // Set container visibilities
-    setLeftClickVisibility(int(Data::is_count_visible(LEFT_CLICK)));
-    setMiddleClickVisibility(int(Data::is_count_visible(MIDDLE_CLICK)));
-    setRightClickVisibility(int(Data::is_count_visible(RIGHT_CLICK)));
-    setSkillUseVisibility(int(Data::is_count_visible(SKILL_USE)));
-    setFlaskUseVisibility(int(Data::is_count_visible(FLASK_USE)));
-    setDetonateVisibility(int(Data::is_count_visible(DETONATE)));
+    this->set_tracker_visibility(LEFT_CLICK, Data::is_count_visible(LEFT_CLICK));
+    this->set_tracker_visibility(MIDDLE_CLICK, Data::is_count_visible(MIDDLE_CLICK));
+    this->set_tracker_visibility(RIGHT_CLICK, Data::is_count_visible(RIGHT_CLICK));
+    this->set_tracker_visibility(SKILL_USE, Data::is_count_visible(SKILL_USE));
+    this->set_tracker_visibility(FLASK_USE, Data::is_count_visible(FLASK_USE));
+    this->set_tracker_visibility(DETONATE, Data::is_count_visible(DETONATE));
 
     // Set window position based on config values
     double x_pos = settings.GetNamedNumber(TRACKER_X_COORDINATE);
@@ -125,7 +118,7 @@ void StackedDisplayContainer::handle_input_event(std::wstring event_type, int id
         ui->flask_value_2->setText(sValue);
         ui->flask_session_value->setText(sSessionValue);
 
-        std::wstring flask_id = INI::find_skill_id(id, toggled);
+        std::wstring flask_id = INI::find_flask_id(id);
 
         int n_flaskCount = Data::get_data_specific_flask_value(flask_id);
         Data::update_data_specific_flask_value(flask_id, json::value(n_flaskCount + 1));
@@ -140,70 +133,40 @@ void StackedDisplayContainer::handle_input_event(std::wstring event_type, int id
 };
 
 
-void StackedDisplayContainer::setGUIMode(int display_index)
+void StackedDisplayContainer::set_gui_mode(int display_index)
 {
     ui->WidgetContainer->setCurrentIndex(display_index);
 }
 
-void StackedDisplayContainer::setLeftClickVisibility(int state) {
-    bool active(state);
-    Data::set_count_visibility(LEFT_CLICK, json::value(active));
+void StackedDisplayContainer::set_tracker_visibility(std::wstring field, bool visible) {
+    Data::set_count_visibility(field, json::value(visible));
 
-    ui->LMBContainer->setVisible(active);
-    ui->LMBContainer_2->setVisible(active);
-
-    update_width();
-}
-
-void StackedDisplayContainer::setMiddleClickVisibility(int state) {
-    bool active(state);
-    Data::set_count_visibility(MIDDLE_CLICK, json::value(active));
-
-    ui->MMBContainer->setVisible(active);
-    ui->MMBContainer_2->setVisible(active);
-
-    this->update_width();
-}
-
-void StackedDisplayContainer::setRightClickVisibility(int state) {
-    bool active(state);
-    Data::set_count_visibility(RIGHT_CLICK, json::value(active));
-
-    ui->RMBContainer->setVisible(active);
-    ui->RMBContainer_2->setVisible(active);
-
-    this->update_width();
-}
-
-void StackedDisplayContainer::setSkillUseVisibility(int state) {
-    bool active(state);
-    Data::set_count_visibility(SKILL_USE, json::value(active));
-
-    // I'm not sure why this is _2 and _3
-    ui->SkillContainer_2->setVisible(active);
-    ui->SkillContainer_3->setVisible(active);
-
-    this->update_width();
-}
-
-void StackedDisplayContainer::setFlaskUseVisibility(int state) {
-    bool active(state);
-    Data::set_count_visibility(FLASK_USE, json::value(active));
-
-    // I'm not sure on this one either
-    ui->FlaskContainer_2->setVisible(active);
-    ui->FlaskContainer_3->setVisible(active);
-
-    this->update_width();
-}
-
-void StackedDisplayContainer::setDetonateVisibility(int state) {
-    bool active(state);
-    Data::set_count_visibility(DETONATE, json::value(active));
-
-    ui->DetonateContainer->setVisible(active);
-    ui->DetonateContainer_2->setVisible(active);
-
+    if (field == LEFT_CLICK) {
+        ui->LMBContainer->setVisible(visible);
+        ui->LMBContainer_2->setVisible(visible);
+    }
+    else if (field == MIDDLE_CLICK) {
+        ui->MMBContainer->setVisible(visible);
+        ui->MMBContainer_2->setVisible(visible);
+    }
+    else if (field == RIGHT_CLICK) {
+        ui->RMBContainer->setVisible(visible);
+        ui->RMBContainer_2->setVisible(visible);
+    }
+    else if (field == SKILL_USE) {
+        // I'm not sure why this is _2 and _3
+        ui->SkillContainer_2->setVisible(visible);
+        ui->SkillContainer_3->setVisible(visible);
+    }
+    else if (field == FLASK_USE) {
+        // I'm not sure on this one either
+        ui->FlaskContainer_2->setVisible(visible);
+        ui->FlaskContainer_3->setVisible(visible);
+    }
+    else if (field == DETONATE) {
+        ui->DetonateContainer->setVisible(visible);
+        ui->DetonateContainer_2->setVisible(visible);
+    }
     this->update_width();
 }
 

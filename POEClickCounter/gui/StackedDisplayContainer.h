@@ -18,7 +18,6 @@ class StackedDisplayContainer : public QWidget
 	Q_DISABLE_COPY(StackedDisplayContainer)
 
 public:
-	static StackedDisplayContainer& instance();
 	explicit StackedDisplayContainer(QWidget *parent = Q_NULLPTR);
 	~StackedDisplayContainer();
 
@@ -26,20 +25,13 @@ public:
 		return movement_locked;
 	}
 
-	void setGUIMode(int);
-
 public slots:
 	void handle_input_event(std::wstring, int, bool);
 	void set_movement_locked(bool);
 	void set_visibility(bool);
 	void reset_session_data();
-
-	void setLeftClickVisibility(int);
-	void setMiddleClickVisibility(int);
-	void setRightClickVisibility(int);
-	void setSkillUseVisibility(int);
-	void setFlaskUseVisibility(int);
-	void setDetonateVisibility(int);
+	void set_gui_mode(int);
+	void set_tracker_visibility(std::wstring, bool);
 
 protected:
 	void mousePressEvent(QMouseEvent*);

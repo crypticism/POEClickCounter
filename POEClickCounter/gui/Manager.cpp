@@ -1,6 +1,9 @@
 #include <QTimer>
 
 #include "Manager.h"
+#include "APM.h"
+#include "StackedDisplayContainer.h"
+#include "SettingsForm.h"
 
 Manager& Manager::instance()
 {
@@ -22,6 +25,28 @@ Manager::Manager(QWidget *parent)
     this->t_checkWindowActive = new QTimer(this);
     connect(t_checkWindowActive, &QTimer::timeout, this, QOverload<>::of(&Manager::check_window_visibility));
     t_checkWindowActive->start(3000);
+
+    APM* apm = new APM;
+    connect(this, &Manager::input_event, apm, &APM::increment_count);
+    connect(this, &Manager::reset_session_data, apm, &APM::reset_session_data);
+    connect(this, &Manager::movement_lock_change, apm, &APM::set_movement_locked);
+    connect(this, &Manager::apm_visibility, apm, &APM::set_visibility);
+
+    StackedDisplayContainer* sdc = new StackedDisplayContainer;
+    connect(this, &Manager::input_event, sdc, &StackedDisplayContainer::handle_input_event);
+    connect(this, &Manager::reset_session_data, sdc, &StackedDisplayContainer::reset_session_data);
+    connect(this, &Manager::movement_lock_change, sdc, &StackedDisplayContainer::set_movement_locked);
+    connect(this, &Manager::tracker_visibility, sdc, &StackedDisplayContainer::set_visibility);
+
+    SettingsForm* sf = new SettingsForm;
+    connect(sf, &SettingsForm::set_movement_locked, this, &Manager::set_movement_lock);
+    connect(sf, &SettingsForm::set_show_tracker, this, &Manager::set_never_show_tracker);
+    connect(sf, &SettingsForm::set_show_apm, this, &Manager::set_never_show_apm);
+    connect(sf, &SettingsForm::set_display_index, sdc, &StackedDisplayContainer::set_gui_mode);
+    connect(sf, &SettingsForm::set_tracker_visibility, sdc, &StackedDisplayContainer::set_tracker_visibility);
+    connect(sf, &SettingsForm::set_apm_timer_window, apm, &APM::set_timer_window);
+
+    connect(this, &Manager::show_settings, sf, &SettingsForm::showSettings);
 }
 
 Manager::~Manager()
@@ -38,9 +63,15 @@ void Manager::check_window_visibility() {
     is_checking_whether_application_active = false;
 
     json::JsonObject settings = Data::get_settings();
-    if (settings.GetNamedBoolean(NEVER_SHOW_GUI))
+    if (!settings.GetNamedBoolean(DISPLAY_TRACKER))
     {
-        emit instance().window_visibility(false);
+        emit instance().tracker_visibility(false);
+        return;
+    }
+
+    if (!settings.GetNamedBoolean(DISPLAY_APM))
+    {
+        emit instance().apm_visibility(false);
         return;
     }
 
@@ -48,11 +79,13 @@ void Manager::check_window_visibility() {
 
     if (is_checking_whether_application_active)
     {
-        emit instance().window_visibility(true);
+        emit instance().tracker_visibility(true);
+        emit instance().apm_visibility(true);
     }
     else
     {
-        emit instance().window_visibility(false);
+        emit instance().tracker_visibility(false);
+        emit instance().apm_visibility(false);
     }
 }
 
@@ -207,9 +240,14 @@ void Manager::set_movement_lock(int locked) {
     emit movement_lock_change(bool(locked));
 }
 
-void Manager::set_never_show(int state) {
-    Data::update_settings(NEVER_SHOW_GUI, json::value(bool(state)));
-    emit instance().window_visibility(bool(state));
+void Manager::set_never_show_tracker(bool state) {
+    Data::update_settings(DISPLAY_TRACKER, json::value(state));
+    emit instance().tracker_visibility(state);
+}
+
+void Manager::set_never_show_apm(bool state) {
+    Data::update_settings(DISPLAY_APM, json::value(state));
+    emit instance().apm_visibility(state);
 }
 
 void Manager::reset_session() {
@@ -218,4 +256,8 @@ void Manager::reset_session() {
 
 void Manager::refresh_keybinds() {
     INI::load_ini();
+}
+
+void Manager::set_settings_visible() {
+    emit instance().show_settings();
 }
