@@ -23,8 +23,6 @@ APM::APM(QWidget *parent)
 	double x_pos = settings.GetNamedNumber(APM_X_COORDINATE);
 	double y_pos = settings.GetNamedNumber(APM_Y_COORDINATE);
 	move(QPoint(int(x_pos), int(y_pos)));
-
-	this->show();
 }
 
 APM::~APM()

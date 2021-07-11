@@ -17,7 +17,7 @@ public:
 
 	static LRESULT CALLBACK mouse_hook(int nCode, WPARAM wParam, LPARAM lParam);
 	static LRESULT CALLBACK keyboard_hook(int nCode, WPARAM wParam, LPARAM lParam);
-	static BOOL CALLBACK enum_window_proc(HWND hwnd, LPARAM lParam);
+	bool is_process_active(DWORD);
 
 private:
 	void check_window_visibility();
@@ -40,8 +40,6 @@ signals:
 
 private:
 	Ui::Manager ui;
-
-	bool is_checking_whether_application_active = false;
 
 	QTimer *t_checkWindowActive;
 

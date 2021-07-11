@@ -5,6 +5,8 @@
 #include "StackedDisplayContainer.h"
 #include "SettingsForm.h"
 
+#include <Psapi.h>
+
 Manager& Manager::instance()
 {
 	static Manager _instance;
@@ -58,9 +60,7 @@ Manager::~Manager()
 }
 
 void Manager::check_window_visibility() {
-    // Reset checking value to false, as we can only determine whether it is open
-    // not whether it is not open
-    is_checking_whether_application_active = false;
+    bool process_active = false;
 
     json::JsonObject settings = Data::get_settings();
     if (!settings.GetNamedBoolean(DISPLAY_TRACKER))
@@ -75,18 +75,23 @@ void Manager::check_window_visibility() {
         return;
     }
 
-    EnumWindows(*enum_window_proc, NULL);
+    // List all process names
+    DWORD a_processes[1024], cb_needed;
+    EnumProcesses(a_processes, sizeof(a_processes), &cb_needed);
+    DWORD n_processes = cb_needed / sizeof(DWORD);
 
-    if (is_checking_whether_application_active)
-    {
-        emit instance().tracker_visibility(true);
-        emit instance().apm_visibility(true);
+    // Check each process to see if it is a Path of Exile process
+    for (int i = 0; i < n_processes; i++) {
+        if (a_processes[i] != 0) {
+            if (this->is_process_active(a_processes[i])) {
+                process_active = true;
+                break;
+            }
+        }
     }
-    else
-    {
-        emit instance().tracker_visibility(false);
-        emit instance().apm_visibility(false);
-    }
+
+    emit instance().tracker_visibility(process_active);
+    emit instance().apm_visibility(process_active);
 }
 
 LRESULT CALLBACK Manager::mouse_hook(int nCode, WPARAM wParam, LPARAM lParam)
@@ -217,24 +222,25 @@ LRESULT CALLBACK Manager::keyboard_hook(int nCode, WPARAM wParam, LPARAM lParam)
     return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
-// Loops through all windows and checks if they match the defined application name
-// If any do, emit an event to note that application is open
-BOOL CALLBACK Manager::enum_window_proc(HWND hwnd, LPARAM lParam)
-{
-    int length = GetWindowTextLength(hwnd) + 1;
+bool Manager::is_process_active(DWORD process_id) {
+    WCHAR s_processName[MAX_PATH] = TEXT("<unknown>");
+    HANDLE h_process = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, process_id);
 
-    std::wstring buffer(length, '\0');
-    LPWSTR title = reinterpret_cast<LPWSTR>(&buffer[0]);
-    GetWindowText(hwnd, title, length);
+    if (NULL != h_process) {
+        HMODULE h_mod;
+        DWORD cb_needed;
 
-    if (IsWindow(hwnd) && title == application)
-    {
-        instance().is_checking_whether_application_active = true;
-        return TRUE;
+        if (EnumProcessModules(h_process, &h_mod, sizeof(h_mod), &cb_needed)) {
+            GetModuleBaseName(h_process, h_mod, s_processName, sizeof(s_processName) / sizeof(WCHAR));
+        }
     }
 
-    return TRUE;
-};
+    CloseHandle(h_process);
+
+    std::wstring ws_processName(s_processName);
+
+    return std::find(process_names.begin(), process_names.end(), ws_processName) != process_names.end()
+}
 
 void Manager::set_movement_lock(int locked) {
     emit movement_lock_change(bool(locked));

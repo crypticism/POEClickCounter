@@ -54,7 +54,7 @@ Double click the POEClickCounter.exe to run the application.
 
 POE Click Counter operates by hooking into mouse and keyboard events system-wide. It then discards any clicks or keypresses that occur in any window other than Path of Exile.
 
-The relevant functions for [mouse presses](https://github.com/crypticism/POEClickCounter/blob/main/POEClickCounter/gui/Manager.cpp#L92) and [keyboard inputs](https://github.com/crypticism/POEClickCounter/blob/main/POEClickCounter/gui/Manager.cpp#L173) are here. (These locations may change in the future, but the functions are named `StackedDisplayContainer::mouse_hook` and `StackedDisplayContainer::keyboard_hook`)
+The relevant functions for [mouse presses](https://github.com/crypticism/POEClickCounter/blob/main/POEClickCounter/gui/Manager.cpp#L927) and [keyboard inputs](https://github.com/crypticism/POEClickCounter/blob/main/POEClickCounter/gui/Manager.cpp#L178) are here. (These locations may change in the future, but the functions are named `Manager::mouse_hook` and `Manager::keyboard_hook`)
 
 The functions operate as follows
 
