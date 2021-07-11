@@ -11,15 +11,9 @@ APM::APM(QWidget *parent)
 {
 	ui->setupUi(this);
 
-	// Connect to global events
-	connect(&Manager::instance(), &Manager::input_event, this, &APM::increment_count);
-	connect(&Manager::instance(), &Manager::reset_session_data, this, &APM::reset_session_data);
-	connect(&Manager::instance(), &Manager::movement_lock_change, this, &APM::set_movement_locked);
-	connect(&Manager::instance(), &Manager::window_visibility, this, &APM::set_visibility);
-
 	this->t_updateInterface = new QTimer(this);
 	connect(t_updateInterface, &QTimer::timeout, this, &APM::update_interface);
-	this->t_updateInterface->start(2000);
+	this->t_updateInterface->start(this->n_updateTime * 1000);
 	
 	this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
 	this->setAttribute(Qt::WA_TranslucentBackground);
@@ -75,6 +69,13 @@ void APM::reset_session_data() {
 void APM::mousePressEvent(QMouseEvent* evt)
 {
 	this->old_pos = evt->globalPos();
+}
+
+void APM::set_timer_window(int value) {
+	this->n_timerWindow = value;
+	this->n_queueSize = this->n_timerWindow / this->n_updateTime;
+	OutputDebugString(reinterpret_cast<LPCWSTR>(&std::to_wstring(this->n_queueSize)[0]));
+	this->q_apmQueue.clear();
 }
 
 void APM::mouseMoveEvent(QMouseEvent* evt)

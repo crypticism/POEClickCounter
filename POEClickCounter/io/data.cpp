@@ -133,7 +133,8 @@ namespace Data
 			update_settings(APM_Y_COORDINATE, json::value(400));
 
 			update_settings(DISPLAY_INDEX, json::value(0));
-			update_settings(NEVER_SHOW_GUI, json::value(false));
+			update_settings(DISPLAY_TRACKER, json::value(true));
+			update_settings(DISPLAY_APM, json::value(true));
 			update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(false));
 			update_settings(TRACK_DETONATE, json::value(false));
 

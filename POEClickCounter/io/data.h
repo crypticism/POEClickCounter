@@ -14,7 +14,8 @@ extern const inline std::wstring DETONATE = L"detonate";
 
 extern const inline std::wstring VISIBLE_COUNTS = L"visible_counts";
 
-extern const inline std::wstring NEVER_SHOW_GUI = L"never_show";
+extern const inline std::wstring DISPLAY_TRACKER = L"display_tracker";
+extern const inline std::wstring DISPLAY_APM = L"display_apm";
 extern const inline std::wstring DISPLAY_INDEX = L"display_index";
 extern const inline std::wstring COUNT_LEFT_CLICK_AS_SKILL_USE = L"count_left_click_as_skill";
 extern const inline std::wstring TRACK_DETONATE = L"track_detonate";
@@ -48,7 +49,7 @@ extern const inline std::wstring SKILL_12 = L"skill_12";
 extern const inline std::wstring SKILL_13 = L"skill_13";
 
 namespace Data {
-	const std::vector<std::wstring> fields = { LEFT_CLICK, MIDDLE_CLICK, RIGHT_CLICK, SKILL_USE, FLASK_USE };
+	const std::vector<std::wstring> fields = { LEFT_CLICK, MIDDLE_CLICK, RIGHT_CLICK, SKILL_USE, FLASK_USE, DETONATE };
 
 	void reset_session_data();
 	

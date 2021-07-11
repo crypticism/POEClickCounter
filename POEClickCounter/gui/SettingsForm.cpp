@@ -7,12 +7,6 @@
 #include "SettingsForm.h"
 #include "ui_SettingsForm.h"
 
-SettingsForm& SettingsForm::instance()
-{
-	static SettingsForm _instance;
-	return _instance;
-}
-
 SettingsForm::SettingsForm(QWidget *parent)
 	: QWidget(parent),
 	ui(new Ui::SettingsForm)
@@ -25,7 +19,8 @@ SettingsForm::SettingsForm(QWidget *parent)
 
 	// Display index of 0 is the index that shows session data, hence this abomination
 	ui->display_index->setChecked(!bool(int(settings.GetNamedNumber(DISPLAY_INDEX))));
-	ui->never_show->setChecked(settings.GetNamedBoolean(NEVER_SHOW_GUI));
+	ui->display_tracker->setChecked(settings.GetNamedBoolean(DISPLAY_TRACKER));
+	ui->display_apm->setChecked(settings.GetNamedBoolean(DISPLAY_APM));
 	ui->count_left_click_as_skill->setChecked(settings.GetNamedBoolean(COUNT_LEFT_CLICK_AS_SKILL_USE));
 	ui->track_detonate->setChecked(settings.GetNamedBoolean(TRACK_DETONATE));
 
@@ -38,20 +33,22 @@ SettingsForm::SettingsForm(QWidget *parent)
 	ui->detonate_visibility->setChecked(Data::is_count_visible(DETONATE));
 
 	// Connect fields to tracker display
-	connect(ui->left_click_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setLeftClickVisibility);
-	connect(ui->middle_click_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setMiddleClickVisibility);
-	connect(ui->right_click_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setRightClickVisibility);
-	connect(ui->skill_use_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setSkillUseVisibility);
-	connect(ui->flask_use_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setFlaskUseVisibility);
-	connect(ui->detonate_visibility, &QCheckBox::stateChanged, &StackedDisplayContainer::instance(), &StackedDisplayContainer::setDetonateVisibility);
+	connect(ui->left_click_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_left_click_visibility);
+	connect(ui->middle_click_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_middle_click_visibility);
+	connect(ui->right_click_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_right_click_visibility);
+	connect(ui->skill_use_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_skill_use_visibility);
+	connect(ui->flask_use_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_flask_use_visibility);
+	connect(ui->detonate_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_detonate_visibility);
 	
 	connect(ui->display_index, &QCheckBox::stateChanged, this, &SettingsForm::displayIndexStateChanged);
-	connect(ui->never_show, &QCheckBox::stateChanged, this, &SettingsForm::neverShowStateChanged);
 	connect(ui->count_left_click_as_skill, &QCheckBox::stateChanged, this, &SettingsForm::countLeftClickStateChanged);
 	connect(ui->track_detonate, &QCheckBox::stateChanged, this, &SettingsForm::trackDetonateStateChanged);
-	connect(ui->movement_locked, &QCheckBox::stateChanged, &Manager::instance(), &Manager::set_movement_lock);
+	connect(ui->movement_locked, &QCheckBox::stateChanged, this, &SettingsForm::set_movement_lock);
 
-	connect(ui->save_button, &QPushButton::pressed, this, &SettingsForm::saveSettings);
+	connect(ui->apm_time_window, &QSlider::valueChanged, this, &SettingsForm::apm_slider_moved);
+
+	connect(ui->display_tracker, &QCheckBox::stateChanged, this, &SettingsForm::set_display_tracker);
+	connect(ui->display_apm, &QCheckBox::stateChanged, this, &SettingsForm::set_display_apm);
 }
 
 void SettingsForm::displayIndexStateChanged() {
@@ -60,11 +57,7 @@ void SettingsForm::displayIndexStateChanged() {
 		display_index = 0;
 	}
 	Data::update_session(DISPLAY_INDEX, json::value(display_index));
-	StackedDisplayContainer::instance().setGUIMode(display_index);
-}
-
-void SettingsForm::neverShowStateChanged(int state) {
-	Data::update_settings(NEVER_SHOW_GUI, json::value(ui->never_show->isChecked()));
+	emit set_display_index(display_index);
 }
 
 void SettingsForm::countLeftClickStateChanged() {
@@ -86,10 +79,44 @@ void SettingsForm::toggleLocked() {
 	}
 }
 
-void SettingsForm::saveSettings() {
-	Data::save_settings();
-	Manager::instance().set_movement_lock(1);
-	this->hide();
+void SettingsForm::set_left_click_visibility() {
+	emit this->set_tracker_visibility(LEFT_CLICK, ui->left_click_visibility->isChecked());
+}
+
+void SettingsForm::set_middle_click_visibility() {
+	emit this->set_tracker_visibility(MIDDLE_CLICK, ui->middle_click_visibility->isChecked());
+}
+
+void SettingsForm::set_right_click_visibility() {
+	emit this->set_tracker_visibility(RIGHT_CLICK, ui->right_click_visibility->isChecked());
+}
+
+void SettingsForm::set_skill_use_visibility() {
+	emit this->set_tracker_visibility(SKILL_USE, ui->skill_use_visibility->isChecked());
+}
+
+void SettingsForm::set_flask_use_visibility() {
+	emit this->set_tracker_visibility(FLASK_USE, ui->flask_use_visibility->isChecked());
+}
+
+void SettingsForm::set_detonate_visibility() {
+	emit this->set_tracker_visibility(DETONATE, ui->detonate_visibility->isChecked());
+}
+
+void SettingsForm::set_movement_lock() {
+	emit this->set_movement_locked(ui->movement_locked->isChecked());
+}
+
+void SettingsForm::set_display_tracker() {
+	emit this->set_show_tracker(ui->display_tracker->isChecked());
+}
+
+void SettingsForm::set_display_apm() {
+	emit this->set_show_apm(ui->display_apm->isChecked());
+}
+
+void SettingsForm::apm_slider_moved(int value) {
+	emit this->set_apm_timer_window(value * 30);
 }
 
 void SettingsForm::showSettings() {
