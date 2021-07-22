@@ -33,6 +33,9 @@ public slots:
 	void set_never_show_flask_tracker(bool);
 	void set_never_show_skill_tracker(bool);
 
+private slots:
+	void save();
+
 signals:
 	void input_event(std::wstring, int, bool);
 	void movement_lock_change(bool);
@@ -43,12 +46,13 @@ signals:
 	void tracker_visibility(bool);
 	void apm_visibility(bool);
 	void flask_tracker_visibility(bool);
-	void skill_tracker_visibility(bool);	
+	void skill_tracker_visibility(bool);
 
 private:
 	Ui::Manager ui;
 
 	QTimer *t_checkWindowActive;
+	QTimer* t_save;
 
 	HHOOK hh_mouse_hook;
 	HHOOK hh_keyboard_hook;

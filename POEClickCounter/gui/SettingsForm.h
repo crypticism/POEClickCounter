@@ -35,6 +35,10 @@ private slots:
 	void set_display_apm();
 	void set_display_flask_tracker();
 	void set_display_skill_tracker();
+	
+	void update_flask_tracker_width(int);
+	void update_skill_tracker_width(int);
+	void update_skill_tracker_height(int);
 
 	void apm_slider_moved(int);
 
@@ -49,6 +53,11 @@ signals:
 	void set_show_flask_tracker(bool);
 	void set_show_skill_tracker(bool);
 	void set_apm_timer_window(int);
+
+	void set_flask_tracker_width(int);
+	void set_skill_tracker_width(int);
+	void set_skill_tracker_height(int);
+
 
 private:
 	Ui::SettingsForm *ui;

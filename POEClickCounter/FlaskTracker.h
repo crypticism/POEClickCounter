@@ -21,6 +21,7 @@ public slots:
 	void handle_input_event(std::wstring, int, bool);
 	void set_movement_locked(bool);
 	void set_visibility(bool);
+	void set_width(int);
 
 protected:
 	void mousePressEvent(QMouseEvent*);

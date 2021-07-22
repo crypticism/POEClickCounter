@@ -32,6 +32,11 @@ SettingsForm::SettingsForm(QWidget *parent)
 	ui->flask_use_visibility->setChecked(Data::is_count_visible(FLASK_USE));
 	ui->detonate_visibility->setChecked(Data::is_count_visible(DETONATE));
 
+	// Initialize width fields
+	ui->flask_tracker_width->setValue(int(settings.GetNamedNumber(FLASK_TRACKER_WIDTH)));
+	ui->skill_tracker_width->setValue(int(settings.GetNamedNumber(SKILL_TRACKER_WIDTH)));
+	ui->skill_tracker_height->setValue(int(settings.GetNamedNumber(SKILL_TRACKER_HEIGHT)));
+
 	// Connect fields to tracker display
 	connect(ui->left_click_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_left_click_visibility);
 	connect(ui->middle_click_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_middle_click_visibility);
@@ -40,6 +45,10 @@ SettingsForm::SettingsForm(QWidget *parent)
 	connect(ui->flask_use_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_flask_use_visibility);
 	connect(ui->detonate_visibility, &QCheckBox::stateChanged, this, &SettingsForm::set_detonate_visibility);
 	
+	connect(ui->flask_tracker_width, &QSpinBox::valueChanged, this, &SettingsForm::update_flask_tracker_width);
+	connect(ui->skill_tracker_width, &QSpinBox::valueChanged, this, &SettingsForm::update_skill_tracker_width);
+	connect(ui->skill_tracker_height, &QSpinBox::valueChanged, this, &SettingsForm::update_skill_tracker_height);
+
 	connect(ui->display_index, &QCheckBox::stateChanged, this, &SettingsForm::displayIndexStateChanged);
 	connect(ui->count_left_click_as_skill, &QCheckBox::stateChanged, this, &SettingsForm::countLeftClickStateChanged);
 	connect(ui->track_detonate, &QCheckBox::stateChanged, this, &SettingsForm::trackDetonateStateChanged);
@@ -127,6 +136,21 @@ void SettingsForm::set_display_skill_tracker() {
 
 void SettingsForm::apm_slider_moved(int value) {
 	emit this->set_apm_timer_window(value * 30);
+}
+
+void SettingsForm::update_flask_tracker_width(int value) {
+	emit this->set_flask_tracker_width(value);
+	Data::update_settings(FLASK_TRACKER_WIDTH, json::value(value));
+}
+
+void SettingsForm::update_skill_tracker_width(int value) {
+	emit this->set_skill_tracker_width(value);
+	Data::update_settings(SKILL_TRACKER_WIDTH, json::value(value));
+}
+
+void SettingsForm::update_skill_tracker_height(int value) {
+	emit this->set_skill_tracker_height(value);
+	Data::update_settings(SKILL_TRACKER_HEIGHT, json::value(value));
 }
 
 void SettingsForm::showSettings() {

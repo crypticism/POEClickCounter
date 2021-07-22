@@ -30,6 +30,11 @@ Manager::Manager(QWidget *parent)
     connect(t_checkWindowActive, &QTimer::timeout, this, QOverload<>::of(&Manager::check_window_visibility));
     t_checkWindowActive->start(3000);
 
+    // Create timer to save settings and data every minute in case of crash
+    this->t_save = new QTimer(this);
+    connect(t_save, &QTimer::timeout, this, &Manager::save);
+    this->t_save->start(60000);
+
     APM* apm = new APM;
     connect(this, &Manager::input_event, apm, &APM::increment_count);
     connect(this, &Manager::reset_session_data, apm, &APM::reset_session_data);
@@ -56,12 +61,15 @@ Manager::Manager(QWidget *parent)
     connect(this, &Manager::input_event, ft, &FlaskTracker::handle_input_event);
     connect(this, &Manager::movement_lock_change, ft, &FlaskTracker::set_movement_locked);
     connect(this, &Manager::flask_tracker_visibility, ft, &FlaskTracker::set_visibility);
+    connect(sf, &SettingsForm::set_flask_tracker_width, ft, &FlaskTracker::set_width);
 
     SkillTracker* st = new SkillTracker;
     connect(this, &Manager::input_event, st, &SkillTracker::handle_input_event);
     connect(this, &Manager::movement_lock_change, st, &SkillTracker::set_movement_locked);
     connect(this, &Manager::skill_tracker_visibility, st, &SkillTracker::set_visibility);
     connect(this, &Manager::skill_bar_toggled, st, &SkillTracker::toggle_display_index);
+    connect(sf, &SettingsForm::set_skill_tracker_width, st, &SkillTracker::set_width);
+    connect(sf, &SettingsForm::set_skill_tracker_height, st, &SkillTracker::set_height);
 
     connect(this, &Manager::show_settings, sf, &SettingsForm::showSettings);
 }
@@ -72,6 +80,11 @@ Manager::~Manager()
     Data::save_settings();
     UnhookWindowsHookEx(this->hh_mouse_hook);
     UnhookWindowsHookEx(this->hh_keyboard_hook);
+}
+
+void Manager::save() {
+    Data::save_data();
+    Data::save_settings();
 }
 
 void Manager::check_window_visibility() {

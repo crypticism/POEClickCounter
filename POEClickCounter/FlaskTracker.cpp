@@ -24,6 +24,9 @@ FlaskTracker::FlaskTracker(QWidget *parent)
 	double x_pos = settings.GetNamedNumber(FLASK_TRACKER_X_COORDINATE);
 	double y_pos = settings.GetNamedNumber(FLASK_TRACKER_Y_COORDINATE);
 	move(QPoint(int(x_pos), int(y_pos)));
+
+	double width = settings.GetNamedNumber(FLASK_TRACKER_WIDTH);
+	this->set_width(int(width));
 }
 
 FlaskTracker::~FlaskTracker()
@@ -69,6 +72,10 @@ void FlaskTracker::set_movement_locked(bool b_locked)
 
 void FlaskTracker::set_visibility(bool b_visible) {
 	this->setVisible(b_visible);
+}
+
+void FlaskTracker::set_width(int width) {
+	this->setFixedWidth(width);
 }
 
 void FlaskTracker::mousePressEvent(QMouseEvent* evt)

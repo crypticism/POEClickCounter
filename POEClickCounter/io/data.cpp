@@ -138,6 +138,10 @@ namespace Data
 			update_settings(SKILL_TRACKER_X_COORDINATE, json::value(1410));
 			update_settings(SKILL_TRACKER_Y_COORDINATE, json::value(940));
 
+			update_settings(SKILL_TRACKER_WIDTH, json::value(280));
+			update_settings(SKILL_TRACKER_HEIGHT, json::value(80));
+			update_settings(FLASK_TRACKER_WIDTH, json::value(225));
+
 			update_settings(DISPLAY_INDEX, json::value(0));
 			update_settings(DISPLAY_FLASK_TRACKER, json::value(true));
 			update_settings(DISPLAY_SKILL_TRACKER, json::value(true));

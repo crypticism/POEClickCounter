@@ -36,6 +36,12 @@ SkillTracker::SkillTracker(QWidget *parent)
 	double x_pos = settings.GetNamedNumber(SKILL_TRACKER_X_COORDINATE);
 	double y_pos = settings.GetNamedNumber(SKILL_TRACKER_Y_COORDINATE);
 	move(QPoint(int(x_pos), int(y_pos)));
+
+	double height = settings.GetNamedNumber(SKILL_TRACKER_HEIGHT);
+	this->set_height(int(height));
+
+	double width = settings.GetNamedNumber(SKILL_TRACKER_WIDTH);
+	this->set_width(int(width));
 }
 
 SkillTracker::~SkillTracker()
@@ -111,6 +117,14 @@ void SkillTracker::set_movement_locked(bool b_locked)
 
 void SkillTracker::set_visibility(bool b_visible) {
 	this->setVisible(b_visible);
+}
+
+void SkillTracker::set_width(int width) {
+	this->setFixedWidth(width);
+}
+
+void SkillTracker::set_height(int height) {
+	this->setFixedHeight(height);
 }
 
 void SkillTracker::mousePressEvent(QMouseEvent* evt)

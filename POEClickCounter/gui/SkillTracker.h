@@ -23,6 +23,8 @@ public slots:
 	void set_movement_locked(bool);
 	void set_visibility(bool);
 	void toggle_display_index(bool);
+	void set_width(int);
+	void set_height(int);
 
 protected:
 	void mousePressEvent(QMouseEvent*);
