@@ -14,6 +14,8 @@ extern const inline std::wstring DETONATE = L"detonate";
 
 extern const inline std::wstring VISIBLE_COUNTS = L"visible_counts";
 
+extern const inline std::wstring DISPLAY_FLASK_TRACKER = L"display_flask_tracker";
+extern const inline std::wstring DISPLAY_SKILL_TRACKER = L"display_skill_tracker";
 extern const inline std::wstring DISPLAY_TRACKER = L"display_tracker";
 extern const inline std::wstring DISPLAY_APM = L"display_apm";
 extern const inline std::wstring DISPLAY_INDEX = L"display_index";
@@ -24,6 +26,10 @@ extern const inline std::wstring TRACKER_X_COORDINATE = L"tracker_x_pos";
 extern const inline std::wstring TRACKER_Y_COORDINATE = L"tracker_y_pos";
 extern const inline std::wstring APM_X_COORDINATE = L"apm_x_pos";
 extern const inline std::wstring APM_Y_COORDINATE = L"apm_y_pos";
+extern const inline std::wstring FLASK_TRACKER_X_COORDINATE = L"flask_tracker_x_pos";
+extern const inline std::wstring FLASK_TRACKER_Y_COORDINATE = L"flask_tracker_y_pos";
+extern const inline std::wstring SKILL_TRACKER_X_COORDINATE = L"skill_tracker_x_pos";
+extern const inline std::wstring SKILL_TRACKER_Y_COORDINATE = L"skill_tracker_y_pos";
 
 extern const inline std::wstring SKILL_SPECIFIC_COUNTS = L"skill_specific_counts";
 extern const inline std::wstring FLASK_SPECIFIC_COUNTS = L"flask_specific_counts";

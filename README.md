@@ -12,11 +12,13 @@ Inspired by [timwalsh](https://github.com/timtwalsh/ClickCountR)'s AHK script
 
     * Only tracks when Path of Exile is active
 
+    * Track individual flask and skill usage
+
 * Track your actions per minute
 
 * Automatically shows and hides when Path of Exile is open/closed
 
-    * Can choose not to show interface even with Path of Exile is open
+    * Can choose not to show interfaces even with Path of Exile is open
 
 * Automatically loads your keybinds
 
@@ -28,17 +30,13 @@ Inspired by [timwalsh](https://github.com/timtwalsh/ClickCountR)'s AHK script
 
 ![GUI Overview](preview/Preview1.png)
 
-Showing session stats:
+Flask tracking:
 
-![Session Stats](preview/Preview2.png)
+![Flask Tracker](preview/PreviewVideo2.gif)
 
-Without session stats:
+Skill tracking:
 
-![No Session Stats](preview/Preview3.png)
-
-With APM tracker:
-
-![APM](preview/Preview4.png)
+![Skill Tracker](preview/PreviewVideo3.gif)
 
 Settings:
 
@@ -54,7 +52,7 @@ Double click the POEClickCounter.exe to run the application.
 
 POE Click Counter operates by hooking into mouse and keyboard events system-wide. It then discards any clicks or keypresses that occur in any window other than Path of Exile.
 
-The relevant functions for [mouse presses](https://github.com/crypticism/POEClickCounter/blob/main/POEClickCounter/gui/Manager.cpp#L927) and [keyboard inputs](https://github.com/crypticism/POEClickCounter/blob/main/POEClickCounter/gui/Manager.cpp#L178) are here. (These locations may change in the future, but the functions are named `Manager::mouse_hook` and `Manager::keyboard_hook`)
+The relevant functions for [mouse presses](https://github.com/crypticism/POEClickCounter/blob/main/POEClickCounter/gui/Manager.cpp#L126) and [keyboard inputs](https://github.com/crypticism/POEClickCounter/blob/main/POEClickCounter/gui/Manager.cpp#L207) are here. (These locations may change in the future, but the functions are named `Manager::mouse_hook` and `Manager::keyboard_hook`)
 
 The functions operate as follows
 

@@ -27,16 +27,23 @@ public slots:
 	void reset_session();
 	void refresh_keybinds();
 	void set_settings_visible();
+
 	void set_never_show_tracker(bool);
 	void set_never_show_apm(bool);
+	void set_never_show_flask_tracker(bool);
+	void set_never_show_skill_tracker(bool);
 
 signals:
 	void input_event(std::wstring, int, bool);
 	void movement_lock_change(bool);
 	void reset_session_data();
 	void show_settings();
+	void skill_bar_toggled(bool);
+	
 	void tracker_visibility(bool);
 	void apm_visibility(bool);
+	void flask_tracker_visibility(bool);
+	void skill_tracker_visibility(bool);	
 
 private:
 	Ui::Manager ui;

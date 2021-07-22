@@ -52,6 +52,12 @@ void APM::increment_count() {
 }
 
 void APM::set_movement_locked(bool b_locked) {
+	if (b_locked && b_locked != this->movement_locked) {
+		this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow, Qt::WindowTransparentForInput });
+	}
+	else if (b_locked != this->movement_locked) {
+		this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
+	}
 	this->movement_locked = b_locked;
 }
 

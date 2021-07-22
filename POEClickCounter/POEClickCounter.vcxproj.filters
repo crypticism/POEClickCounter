@@ -52,6 +52,12 @@
     <ClCompile Include="gui\APM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FlaskTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\SkillTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="gui\SystemTrayIcon.h">
@@ -67,6 +73,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="gui\APM.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="FlaskTracker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="gui\SkillTracker.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -109,6 +121,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="gui\APM.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="FlaskTracker.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="gui\SkillTracker.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

@@ -13,7 +13,7 @@ StackedDisplayContainer::StackedDisplayContainer(QWidget *parent)
     this->container_width = ui->LMBContainer->width();
 
     // Window settings to make the window bordless, always on top and have no taskbar thing
-    this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
+    this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow, Qt::WindowTransparentForInput });
     // Window setting to allow the background to be transparent
     this->setAttribute(Qt::WA_TranslucentBackground);
 
@@ -181,6 +181,12 @@ void StackedDisplayContainer::update_width() {
 
 void StackedDisplayContainer::set_movement_locked(bool b_locked)
 {
+    if (b_locked && b_locked != this->movement_locked) {
+        this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow, Qt::WindowTransparentForInput });
+    }
+    else if (b_locked != this->movement_locked) {
+        this->setWindowFlags({ Qt::FramelessWindowHint, Qt::WindowStaysOnTopHint, Qt::SubWindow });
+    }
     this->movement_locked = b_locked;
 }
 

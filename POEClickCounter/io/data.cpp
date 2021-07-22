@@ -126,13 +126,21 @@ namespace Data
 		}
 		else {
 			settings = json::JsonObject{};
-			update_settings(TRACKER_X_COORDINATE, json::value(500));
-			update_settings(TRACKER_Y_COORDINATE, json::value(500));
+			update_settings(TRACKER_X_COORDINATE, json::value(550));
+			update_settings(TRACKER_Y_COORDINATE, json::value(1025));
 
-			update_settings(APM_X_COORDINATE, json::value(400));
-			update_settings(APM_Y_COORDINATE, json::value(400));
+			update_settings(APM_X_COORDINATE, json::value(550));
+			update_settings(APM_Y_COORDINATE, json::value(1000));
+
+			update_settings(FLASK_TRACKER_X_COORDINATE, json::value(309));
+			update_settings(FLASK_TRACKER_Y_COORDINATE, json::value(960));
+
+			update_settings(SKILL_TRACKER_X_COORDINATE, json::value(1410));
+			update_settings(SKILL_TRACKER_Y_COORDINATE, json::value(940));
 
 			update_settings(DISPLAY_INDEX, json::value(0));
+			update_settings(DISPLAY_FLASK_TRACKER, json::value(true));
+			update_settings(DISPLAY_SKILL_TRACKER, json::value(true));
 			update_settings(DISPLAY_TRACKER, json::value(true));
 			update_settings(DISPLAY_APM, json::value(true));
 			update_settings(COUNT_LEFT_CLICK_AS_SKILL_USE, json::value(false));
@@ -168,6 +176,9 @@ namespace Data
 	}
 
 	double get_data_value(std::wstring field) {
+		if (json::has(data, field, json::JsonValueType::Number) == false) {
+			return 0;
+		}
 		return data.GetNamedNumber(field);
 	}
 
@@ -180,6 +191,9 @@ namespace Data
 	}
 
 	double get_session_value(std::wstring field) {
+		if (json::has(session, field, json::JsonValueType::Number) == false) {
+			return 0;
+		}
 		return session.GetNamedNumber(field);
 	}
 

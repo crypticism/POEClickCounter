@@ -49,6 +49,8 @@ SettingsForm::SettingsForm(QWidget *parent)
 
 	connect(ui->display_tracker, &QCheckBox::stateChanged, this, &SettingsForm::set_display_tracker);
 	connect(ui->display_apm, &QCheckBox::stateChanged, this, &SettingsForm::set_display_apm);
+	connect(ui->display_flask_tracker, &QCheckBox::stateChanged, this, &SettingsForm::set_display_flask_tracker);
+	connect(ui->display_skill_tracker, &QCheckBox::stateChanged, this, &SettingsForm::set_display_skill_tracker);
 }
 
 void SettingsForm::displayIndexStateChanged() {
@@ -113,6 +115,14 @@ void SettingsForm::set_display_tracker() {
 
 void SettingsForm::set_display_apm() {
 	emit this->set_show_apm(ui->display_apm->isChecked());
+}
+
+void SettingsForm::set_display_flask_tracker() {
+	emit this->set_show_flask_tracker(ui->display_flask_tracker->isChecked());
+}
+
+void SettingsForm::set_display_skill_tracker() {
+	emit this->set_show_skill_tracker(ui->display_skill_tracker->isChecked());
 }
 
 void SettingsForm::apm_slider_moved(int value) {

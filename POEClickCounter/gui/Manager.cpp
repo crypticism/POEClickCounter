@@ -4,6 +4,8 @@
 #include "APM.h"
 #include "StackedDisplayContainer.h"
 #include "SettingsForm.h"
+#include "FlaskTracker.h"
+#include "SkillTracker.h"
 
 #include <Psapi.h>
 
@@ -44,9 +46,22 @@ Manager::Manager(QWidget *parent)
     connect(sf, &SettingsForm::set_movement_locked, this, &Manager::set_movement_lock);
     connect(sf, &SettingsForm::set_show_tracker, this, &Manager::set_never_show_tracker);
     connect(sf, &SettingsForm::set_show_apm, this, &Manager::set_never_show_apm);
+    connect(sf, &SettingsForm::set_show_flask_tracker, this, &Manager::set_never_show_flask_tracker);
+    connect(sf, &SettingsForm::set_show_skill_tracker, this, &Manager::set_never_show_skill_tracker);
     connect(sf, &SettingsForm::set_display_index, sdc, &StackedDisplayContainer::set_gui_mode);
     connect(sf, &SettingsForm::set_tracker_visibility, sdc, &StackedDisplayContainer::set_tracker_visibility);
     connect(sf, &SettingsForm::set_apm_timer_window, apm, &APM::set_timer_window);
+
+    FlaskTracker* ft = new FlaskTracker;
+    connect(this, &Manager::input_event, ft, &FlaskTracker::handle_input_event);
+    connect(this, &Manager::movement_lock_change, ft, &FlaskTracker::set_movement_locked);
+    connect(this, &Manager::flask_tracker_visibility, ft, &FlaskTracker::set_visibility);
+
+    SkillTracker* st = new SkillTracker;
+    connect(this, &Manager::input_event, st, &SkillTracker::handle_input_event);
+    connect(this, &Manager::movement_lock_change, st, &SkillTracker::set_movement_locked);
+    connect(this, &Manager::skill_tracker_visibility, st, &SkillTracker::set_visibility);
+    connect(this, &Manager::skill_bar_toggled, st, &SkillTracker::toggle_display_index);
 
     connect(this, &Manager::show_settings, sf, &SettingsForm::showSettings);
 }
@@ -75,6 +90,18 @@ void Manager::check_window_visibility() {
         return;
     }
 
+    if (!settings.GetNamedBoolean(DISPLAY_FLASK_TRACKER))
+    {
+        emit instance().flask_tracker_visibility(false);
+        return;
+    }
+
+    if (!settings.GetNamedBoolean(DISPLAY_SKILL_TRACKER))
+    {
+        emit instance().skill_tracker_visibility(false);
+        return;
+    }
+
     // List all process names
     DWORD a_processes[1024], cb_needed;
     EnumProcesses(a_processes, sizeof(a_processes), &cb_needed);
@@ -92,6 +119,8 @@ void Manager::check_window_visibility() {
 
     emit instance().tracker_visibility(process_active);
     emit instance().apm_visibility(process_active);
+    emit instance().flask_tracker_visibility(process_active);
+    emit instance().skill_tracker_visibility(process_active);
 }
 
 LRESULT CALLBACK Manager::mouse_hook(int nCode, WPARAM wParam, LPARAM lParam)
@@ -186,10 +215,16 @@ LRESULT CALLBACK Manager::keyboard_hook(int nCode, WPARAM wParam, LPARAM lParam)
     // These two checks are not localized to the application window, as Path of Exile also doesn't
     // restrict skill bar toggling to inputs over the Path of Exile window
     if (nCode == HC_ACTION && wParam == WM_KEYDOWN && INI::is_keyboard_toggle_code(input)) {
+        if (instance().is_skill_bar_toggled != true) {
+            emit instance().skill_bar_toggled(true);
+        }
         instance().is_skill_bar_toggled = true;
     }
 
     if (nCode == HC_ACTION && wParam == WM_KEYUP && INI::is_keyboard_toggle_code(input)) {
+        if (instance().is_skill_bar_toggled != false) {
+            emit instance().skill_bar_toggled(false);
+        }
         instance().is_skill_bar_toggled = false;
     }
 
@@ -239,7 +274,7 @@ bool Manager::is_process_active(DWORD process_id) {
 
     std::wstring ws_processName(s_processName);
 
-    return std::find(process_names.begin(), process_names.end(), ws_processName) != process_names.end()
+    return std::find(process_names.begin(), process_names.end(), ws_processName) != process_names.end();
 }
 
 void Manager::set_movement_lock(int locked) {
@@ -254,6 +289,16 @@ void Manager::set_never_show_tracker(bool state) {
 void Manager::set_never_show_apm(bool state) {
     Data::update_settings(DISPLAY_APM, json::value(state));
     emit instance().apm_visibility(state);
+}
+
+void Manager::set_never_show_flask_tracker(bool state) {
+    Data::update_settings(DISPLAY_FLASK_TRACKER, json::value(state));
+    emit instance().flask_tracker_visibility(state);
+}
+
+void Manager::set_never_show_skill_tracker(bool state) {
+    Data::update_settings(DISPLAY_SKILL_TRACKER, json::value(state));
+    emit instance().skill_tracker_visibility(state);
 }
 
 void Manager::reset_session() {

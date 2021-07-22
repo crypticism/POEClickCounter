@@ -105,9 +105,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="POEClickCounter.qrc" />
+    <ClCompile Include="FlaskTracker.cpp" />
     <ClCompile Include="gui\APM.cpp" />
     <ClCompile Include="gui\Manager.cpp" />
     <ClCompile Include="gui\SettingsForm.cpp" />
+    <ClCompile Include="gui\SkillTracker.cpp" />
     <ClCompile Include="gui\StackedDisplayContainer.cpp" />
     <ClCompile Include="gui\SystemTrayIcon.cpp" />
     <ClCompile Include="io\data.cpp" />
@@ -118,6 +120,8 @@
     <QtMoc Include="gui\SettingsForm.h" />
     <QtMoc Include="gui\Manager.h" />
     <QtMoc Include="gui\APM.h" />
+    <QtMoc Include="FlaskTracker.h" />
+    <QtMoc Include="gui\SkillTracker.h" />
     <ClInclude Include="utils\utils.h" />
     <QtMoc Include="gui\SystemTrayIcon.h" />
     <QtMoc Include="gui\StackedDisplayContainer.h" />
@@ -131,9 +135,11 @@
     <ResourceCompile Include="POEClickCounter.rc" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="FlaskTracker.ui" />
     <QtUic Include="gui\APM.ui" />
     <QtUic Include="gui\Manager.ui" />
     <QtUic Include="gui\SettingsForm.ui" />
+    <QtUic Include="gui\SkillTracker.ui" />
     <QtUic Include="gui\StackedDisplayContainer.ui" />
     <QtUic Include="gui\SystemTrayIcon.ui" />
   </ItemGroup>

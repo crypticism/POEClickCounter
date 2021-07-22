@@ -33,6 +33,8 @@ private slots:
 
 	void set_display_tracker();
 	void set_display_apm();
+	void set_display_flask_tracker();
+	void set_display_skill_tracker();
 
 	void apm_slider_moved(int);
 
@@ -44,6 +46,8 @@ signals:
 	void set_tracker_visibility(std::wstring, bool);
 	void set_show_tracker(bool);
 	void set_show_apm(bool);
+	void set_show_flask_tracker(bool);
+	void set_show_skill_tracker(bool);
 	void set_apm_timer_window(int);
 
 private:
